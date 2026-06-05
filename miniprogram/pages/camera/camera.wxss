@@ -238,16 +238,16 @@
   background: rgba(255, 255, 255, 0.15);
 }
 
-/* 统一符号样式 */
+/* HUD/底部操作区的符号样式（侧边栏、相册、我的按钮） */
 .metaphor-symbol {
-  font-size: 44rpx; /* 稍微缩小一点，增加呼吸感 */
+  font-size: 44rpx;
   color: #FFFFFF;
   opacity: 0.5;
   z-index: 2;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* 3. Filter Workbench - Pure Symbolic Metaphor (Refined V5) */
+/* 3. 滤镜工作台（色块预览条，替代 emoji 图标） */
 .bottom-console-wrap {
   position: absolute;
   bottom: 0; left: 0; right: 0;
@@ -261,65 +261,55 @@
 .filter-list-inner {
   display: flex;
   padding: 20rpx var(--space-4);
-  gap: var(--space-2);
+  gap: 20rpx;
   align-items: center;
 }
-.filter-metaphor-item {
+
+/* 滤镜条每一项 */
+.filter-strip-item {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12rpx;
-  width: 140rpx;
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  gap: 10rpx;
+  transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.filter-strip-item.active {
+  transform: translateY(-10rpx);
 }
 
-/* 聚焦光斑：选中时展开的呼吸感背景 */
-.metaphor-spotlight {
-  position: absolute;
-  top: 50%; left: 50%;
-  width: 0; height: 0;
-  background: rgba(255, 255, 255, 0.08);
+/* 色块渐变圆 */
+.filter-swatch-ring {
+  width: 72rpx; height: 72rpx;
   border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-  pointer-events: none;
+  border: 3rpx solid rgba(255,255,255,0.15);
+  padding: 4rpx;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.filter-strip-item.active .filter-swatch-ring {
+  border-color: var(--swancam-primary);
+  box-shadow: 0 0 16rpx rgba(255,45,85,0.5);
+}
+.filter-swatch-circle {
+  width: 100%; height: 100%;
+  border-radius: 50%;
 }
 
-/* 选中态：符号即是核心，彻底具象化 */
-.filter-metaphor-item.active {
-  transform: scale(1.1) translateY(-12rpx);
-}
-.filter-metaphor-item.active .metaphor-spotlight {
-  width: 110rpx;
-  height: 110rpx;
-  background: var(--swancam-primary-light);
-  box-shadow: 0 0 30rpx var(--swancam-primary-light);
-}
-.filter-metaphor-item.active .metaphor-symbol {
-  opacity: 1;
-  filter: grayscale(0);
-  transform: scale(1.15);
-  text-shadow: 0 0 15rpx rgba(255, 45, 85, 0.4);
-}
-
-.metaphor-label {
+/* 滤镜名称 */
+.filter-strip-name {
   font-size: 20rpx;
-  color: #FFFFFF;
-  opacity: 0.3;
+  color: rgba(255,255,255,0.4);
+  transition: color 0.3s, opacity 0.3s;
   font-weight: var(--font-weight-med);
-  transition: all 0.3s;
 }
-.filter-metaphor-item.active .metaphor-label {
-  opacity: 1;
+.filter-strip-item.active .filter-strip-name {
   color: var(--swancam-primary);
-  letter-spacing: 1rpx;
+  opacity: 1;
 }
 
-/* 交互增强：非活动项轻微缩小并进一步淡化 */
-.filter-list-inner:active .filter-metaphor-item:not(.active) {
-  opacity: 0.2;
-  transform: scale(0.9);
+/* 非活动项按压淡化 */
+.filter-list-inner:active .filter-strip-item:not(.active) {
+  opacity: 0.35;
 }
 
 /* 4. Core Interaction Row - Precision Shutter */

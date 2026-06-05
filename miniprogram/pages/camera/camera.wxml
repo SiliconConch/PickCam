@@ -116,24 +116,26 @@
     </view>
   </view>
 
-  <!-- 3. 滤镜工作台 (Refined V5 - Pure Symbolic Metaphor) -->
+  <!-- 3. 滤镜工作台（色块预览条） -->
   <view class="bottom-console-wrap">
     <view class="filter-workbench">
       <scroll-view class="filter-scroll" scroll-x show-scrollbar="{{false}}">
         <view class="filter-list-inner">
-          <view 
-            class="filter-metaphor-item {{item.id === selectedFilterId ? 'active' : ''}}" 
-            wx:for="{{filterStripList}}" 
+          <view
+            class="filter-strip-item {{item.id === selectedFilterId ? 'active' : ''}}"
+            wx:for="{{filterStripList}}"
             wx:key="id"
             bindtap="selectFilter"
             data-id="{{item.id}}"
           >
-            <!-- 具象符号核心层 -->
-            <view class="metaphor-icon-wrapper">
-              <view class="metaphor-spotlight"></view>
-              <text class="metaphor-symbol">{{item.meta.icon}}</text>
+            <!-- 色调渐变圆：直观展示滤镜色调 -->
+            <view class="filter-swatch-ring">
+              <view
+                class="filter-swatch-circle"
+                style="background: linear-gradient(135deg, {{item.swatch[0]}} 0%, {{item.swatch[1]}} 100%);"
+              ></view>
             </view>
-            <text class="metaphor-label">{{item.name}}</text>
+            <text class="filter-strip-name">{{item.name}}</text>
           </view>
         </view>
       </scroll-view>
