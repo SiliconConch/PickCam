@@ -80,32 +80,42 @@
   margin: -8rpx 0 24rpx;
 }
 
-/* ========== Pro 提示条 ========== */
-.pro-tip {
+/* ========== C10: Pro 升级卡片 ========== */
+.pro-upgrade-card {
   margin: 0 32rpx 28rpx;
-  background: rgba(255, 45, 85, 0.08);
-  border: 1rpx solid rgba(255, 45, 85, 0.2);
-  border-radius: var(--radius-md);
-  padding: 20rpx 24rpx;
+  background: linear-gradient(135deg, rgba(255,45,85,0.12) 0%, rgba(230,126,34,0.08) 100%);
+  border: 1rpx solid rgba(255,45,85,0.28);
+  border-radius: var(--radius-lg);
+  padding: 28rpx 28rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  box-shadow: 0 4rpx 20rpx rgba(255,45,85,0.1);
 }
-
-.pro-tip-text {
-  font-size: 24rpx;
-  color: var(--swancam-text-secondary);
-  flex: 1;
-  line-height: 1.4;
-}
-
-.pro-tip-btn {
-  font-size: 24rpx;
+.pro-card-left  { display: flex; align-items: center; gap: 20rpx; flex: 1; }
+.pro-badge {
+  font-size: 18rpx; font-weight: 700;
   color: var(--swancam-primary);
-  font-weight: var(--font-weight-bold);
-  white-space: nowrap;
-  margin-left: 20rpx;
+  background: var(--swancam-primary-light);
+  border: 1rpx solid rgba(255,45,85,0.3);
+  border-radius: var(--radius-sm);
+  padding: 4rpx 12rpx;
+  letter-spacing: 2rpx;
+  flex-shrink: 0;
 }
+.pro-card-text  { display: flex; flex-direction: column; gap: 6rpx; }
+.pro-card-title { font-size: 26rpx; font-weight: var(--font-weight-bold); color: var(--swancam-text-primary); }
+.pro-card-desc  { font-size: 20rpx; color: var(--swancam-text-tertiary); }
+.pro-card-btn {
+  font-size: 24rpx; font-weight: var(--font-weight-bold);
+  color: #FFFFFF;
+  background: var(--swancam-primary);
+  padding: 16rpx 36rpx;
+  border-radius: var(--radius-full);
+  box-shadow: 0 4rpx 16rpx rgba(255,45,85,0.35);
+  flex-shrink: 0;
+}
+.pro-card-btn:active { opacity: 0.8; }
 
 /* ========== 底部操作按钮组 ========== */
 .action-row {

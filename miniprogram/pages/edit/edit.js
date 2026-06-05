@@ -48,6 +48,7 @@ Page({
     filterCategories: FILTER_CATEGORIES,
     selectedFilterCategory: 'all',
     favoritedFilters: [],
+    favoritedSet: {},          // id → true，供 WXML 直接查询
 
     // 专业模式
     showProPanel: false,
@@ -57,9 +58,9 @@ Page({
 
     // 水印
     watermarkTemplates: WATERMARK_TEMPLATES,
-    filteredTemplates: [],
-    wmCategories: WATERMARK_CATEGORIES,
-    selectedWmCategory: 'minimal',
+    filteredTemplates: WATERMARK_TEMPLATES,   // 默认全部显示
+    wmCategories: [{ id: 'all', name: '全部' }, ...WATERMARK_CATEGORIES],
+    selectedWmCategory: 'all',
     selectedTemplateId: 'classic',
     watermarkEnabled: true,
     watermarkConfig: null,
@@ -89,6 +90,10 @@ Page({
     // 对比模式
     compareMode: false,
     compareDividerRatio: 0.5,
+
+    // 图片变换（旋转/翻转）
+    imageRotation: 0,     // 0 / 90 / 180 / 270
+    imageFlipped: false,
 
     // 当前滤镜名（预计算，供显示用）
     currentFilterName: '原片'
@@ -120,9 +125,10 @@ Page({
 
     const info = wx.getWindowInfo();
     const previewWidth  = info.windowWidth;
+    // C6：提升预览高度，从 52% → 60%，更接近对标产品
     const previewHeight = Math.min(
-      Math.round(previewWidth * 0.75),
-      Math.round(info.windowHeight * 0.52)
+      Math.round(previewWidth * 0.9),
+      Math.round(info.windowHeight * 0.60)
     );
 
     // 拍摄时预选的滤镜优先，否则用个人默认 → 最近记录
@@ -135,6 +141,8 @@ Page({
       : (appSettings.defaultTemplateId || RecentUsageStorage.getRecentTemplate() || 'classic');
     const lastFilterId = captureFilterId || appSettings.defaultFilterId || RecentUsageStorage.getRecentFilter() || 'original';
     const favoritedFilters = wx.getStorageSync('pickcam_favorites') || [];
+    const favoritedSet = {};
+    favoritedFilters.forEach(id => { favoritedSet[id] = true; });
 
     const template = this._watermarkConfigMgr.getTemplateById(lastTemplateId);
     const watermarkConfig = this._watermarkConfigMgr.cloneConfig(template.config);
@@ -166,7 +174,8 @@ Page({
       watermarkConfig,
       previewWidth, previewHeight,
       wmPosition: pos, wmFontSize: fontSize, wmOpacity,
-      favoritedFilters
+      favoritedFilters, favoritedSet,
+      filteredTemplates: WATERMARK_TEMPLATES   // 初始化为全部
     });
 
     this._loadPhotoMeta(photos[0]);
@@ -271,8 +280,25 @@ Page({
       });
     } catch (e) { return; }
 
-    const { x, y, w, h } = this._calcFit(img.width, img.height, W, H);
-    ctx.drawImage(img, x, y, w, h);
+    // 旋转 90°/270° 时交换宽高计算 fit
+    const rot = this.data.imageRotation;
+    const isSwapped = rot === 90 || rot === 270;
+    const { x, y, w, h } = this._calcFit(
+      isSwapped ? img.height : img.width,
+      isSwapped ? img.width  : img.height,
+      W, H
+    );
+    // 应用旋转/翻转变换后绘图
+    ctx.save();
+    ctx.translate(x + w / 2, y + h / 2);
+    if (this.data.imageFlipped) ctx.scale(-1, 1);
+    if (rot !== 0) ctx.rotate(rot * Math.PI / 180);
+    if (isSwapped) {
+      ctx.drawImage(img, -h / 2, -w / 2, h, w);
+    } else {
+      ctx.drawImage(img, -w / 2, -h / 2, w, h);
+    }
+    ctx.restore();
 
     // 应用滤镜（使用合并参数）
     const combinedParams = this._getCombinedFilterParams();
@@ -658,8 +684,10 @@ Page({
     if (idx > -1) favs.splice(idx, 1);
     else favs.unshift(filterId);
     wx.setStorageSync('pickcam_favorites', favs);
-    this.setData({ favoritedFilters: favs });
-    // 如果当前在收藏分类，刷新列表
+    // 同步更新 favoritedSet（供 WXML {{favoritedSet[item.id]}} 读取）
+    const favoritedSet = {};
+    favs.forEach(id => { favoritedSet[id] = true; });
+    this.setData({ favoritedFilters: favs, favoritedSet });
     if (this.data.selectedFilterCategory === 'favorites') {
       const allFilters = FilterRenderer.getPresets();
       this.setData({ filteredFilters: allFilters.filter(f => favs.includes(f.id)) });
@@ -719,7 +747,9 @@ Page({
   onSelectWmCategory(e) {
     const category = e.currentTarget.dataset.category;
     if (category === this.data.selectedWmCategory) return;
-    const filteredTemplates = this._filterTemplatesByCategory(category);
+    const filteredTemplates = category === 'all'
+      ? WATERMARK_TEMPLATES
+      : this._filterTemplatesByCategory(category);
     this.setData({ selectedWmCategory: category, filteredTemplates });
   },
 
@@ -811,6 +841,62 @@ Page({
     } catch (e) {
       return 'bottom-left';
     }
+  },
+
+  // ── 图片旋转（每次 +90°） ──
+  rotateImage() {
+    const rotation = (this.data.imageRotation + 90) % 360;
+    this.setData({ imageRotation: rotation });
+    this._renderPreview();
+  },
+
+  // ── 水平翻转 ──
+  flipImage() {
+    this.setData({ imageFlipped: !this.data.imageFlipped });
+    this._renderPreview();
+  },
+
+  // ── 将旋转/翻转应用到图片文件（保存前调用） ──
+  async _applyTransform(filePath) {
+    const { imageRotation, imageFlipped } = this.data;
+    if (imageRotation === 0 && !imageFlipped) return filePath;
+
+    return new Promise((resolve) => {
+      wx.getImageInfo({
+        src: filePath,
+        success: ({ width, height }) => {
+          const isSwapped = imageRotation === 90 || imageRotation === 270;
+          const cw = isSwapped ? height : width;
+          const ch = isSwapped ? width : height;
+
+          const offCanvas = wx.createOffscreenCanvas({ type: '2d', width: cw, height: ch });
+          const ctx = offCanvas.getContext('2d');
+          const img = offCanvas.createImage();
+
+          img.onload = () => {
+            ctx.save();
+            ctx.translate(cw / 2, ch / 2);
+            if (imageFlipped) ctx.scale(-1, 1);
+            ctx.rotate(imageRotation * Math.PI / 180);
+            if (isSwapped) {
+              ctx.drawImage(img, -height / 2, -width / 2, height, width);
+            } else {
+              ctx.drawImage(img, -width / 2, -height / 2, width, height);
+            }
+            ctx.restore();
+
+            wx.canvasToTempFilePath({
+              canvas: offCanvas, fileType: 'jpg', quality: 0.95,
+              success: res => resolve(res.tempFilePath),
+              fail: () => resolve(filePath)
+            });
+          };
+          img.onerror = () => resolve(filePath);
+          img.src = filePath;
+        },
+        fail: () => resolve(filePath)
+      });
+    });
   },
 
   // ── 刷新当前位置（水印面板快捷按钮）──
@@ -997,6 +1083,10 @@ Page({
   // ── 完整质量处理单张（用于保存） ──
   async _processPhotoFull(photo, wmConfigOverride) {
     let path = photo.tempFilePath;
+
+    // Step 0: 旋转/翻转变换（保存时应用到实际图片）
+    const transformed = await this._applyTransform(path);
+    if (transformed !== path) { cleanupTempFile(path); path = transformed; }
 
     const compressed = await compressImageIfNeeded(path, APP_CONFIG.MAX_IMAGE_SIZE);
     if (compressed !== path) path = compressed;

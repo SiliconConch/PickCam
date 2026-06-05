@@ -10,6 +10,51 @@
     wx:if="{{!cameraError}}"
   />
 
+  <!-- B1: 九宫格辅助线 -->
+  <view class="grid-overlay" wx:if="{{showGrid}}">
+    <view class="grid-line gl-v1"></view>
+    <view class="grid-line gl-v2"></view>
+    <view class="grid-line gl-h1"></view>
+    <view class="grid-line gl-h2"></view>
+  </view>
+
+  <!-- B2: 水平仪 -->
+  <view class="level-bar" wx:if="{{showLevel}}">
+    <view class="level-track">
+      <view class="level-center-mark"></view>
+      <view class="level-bubble {{levelOk ? 'level-ok' : ''}}"
+        style="transform: translateX({{levelTilt * 120}}rpx)">
+      </view>
+    </view>
+    <text class="level-hint">{{levelOk ? '水平 ✓' : '调整倾斜'}}</text>
+  </view>
+
+  <!-- B3: 画幅裁剪参考线 -->
+  <view class="ratio-guide" wx:if="{{aspectRatio !== 'full'}}">
+    <view class="ratio-mask ratio-mask-top"></view>
+    <view class="ratio-mask ratio-mask-bottom"></view>
+    <view class="ratio-label-wrap">
+      <text class="ratio-label">{{aspectRatio}}</text>
+    </view>
+  </view>
+
+  <!-- C1/C2: 全屏触控层（对焦圈 + 捏合缩放） -->
+  <view
+    class="camera-touch-layer"
+    catchtap="onCameraFocusTap"
+    bindtouchstart="onPinchStart"
+    bindtouchmove="onPinchMove"
+    bindtouchend="onPinchEnd"
+    wx:if="{{!cameraError}}"
+  >
+    <!-- C1: 对焦框动画 -->
+    <view class="focus-ring" wx:if="{{showFocusRing}}" style="left:{{focusX}}px;top:{{focusY}}px;"></view>
+    <!-- C2: 缩放指示器 -->
+    <view class="zoom-bar" wx:if="{{showZoomBar}}">
+      <text class="zoom-text">{{zoomValue}}×</text>
+    </view>
+  </view>
+
   <!-- 1. 顶部控制中心 (Refined HUD - Minimalist & Professional) -->
   <view class="top-control-center glass-panel">
     <view class="top-action-item swancam-btn-ripple" bindtap="flipCamera">
@@ -130,6 +175,26 @@
             <text class="more-grid-icon">{{item.icon}}</text>
           </view>
           <text class="more-grid-label">{{item.name}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- B3: 画幅比例选择器 -->
+  <view class="ratio-picker-mask" wx:if="{{showRatioPicker}}" bindtap="closeRatioPicker" catchtouchmove="preventTouchMove">
+    <view class="ratio-picker-card glass-panel" catchtap="preventTouchMove">
+      <view class="ratio-picker-header">
+        <text class="ratio-picker-title">选择画幅</text>
+        <view class="ratio-picker-close" bindtap="closeRatioPicker">✕</view>
+      </view>
+      <view class="ratio-picker-grid">
+        <view
+          class="ratio-option {{item.id === aspectRatio ? 'active' : ''}}"
+          wx:for="{{ratioOptions}}" wx:key="id"
+          bindtap="selectRatio" data-ratio="{{item.id}}"
+        >
+          <view class="ratio-thumb ratio-thumb-{{item.id === 'full' ? 'full' : item.id}}"></view>
+          <text class="ratio-name">{{item.label}}</text>
         </view>
       </view>
     </view>

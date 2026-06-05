@@ -26,10 +26,16 @@
   <!-- 操作提示 -->
   <text class="tip-text">长按图片可保存或分享</text>
 
-  <!-- Pro版提示（非Pro时显示） -->
-  <view class="pro-tip" wx:if="{{!isPro}}">
-    <text class="pro-tip-text">升级 Pro 版可去除「来自拾光相机」水印</text>
-    <view class="pro-tip-btn">了解 Pro 版</view>
+  <!-- C10: Pro 升级卡片（重设计） -->
+  <view class="pro-upgrade-card" wx:if="{{!isPro}}">
+    <view class="pro-card-left">
+      <view class="pro-badge">PRO</view>
+      <view class="pro-card-text">
+        <text class="pro-card-title">解锁无水印导出</text>
+        <text class="pro-card-desc">去除品牌角标 · 专属模板解锁</text>
+      </view>
+    </view>
+    <view class="pro-card-btn">升级</view>
   </view>
 
   <!-- 操作按钮 -->

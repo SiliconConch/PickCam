@@ -415,3 +415,70 @@
 /* 位置输入 */
 .location-input-wrap { background: rgba(255,255,255,0.05); border-radius: var(--radius-sm); border: 1rpx solid rgba(255,255,255,0.08); padding: 0 20rpx; }
 .location-input      { width: 100%; height: 72rpx; font-size: 26rpx; color: var(--swancam-text-primary); }
+
+/* ========== C4: 旋转/翻转工具栏 ========== */
+.transform-bar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 12rpx 32rpx;
+  background: rgba(18,18,18,0.9);
+  border-bottom: 1rpx solid rgba(255,255,255,0.04);
+}
+.transform-btn {
+  display: flex; align-items: center; gap: 10rpx;
+  padding: 10rpx 28rpx 10rpx 0;
+  margin-right: 12rpx;
+}
+.transform-btn.active .transform-icon { color: var(--swancam-primary); }
+.transform-icon { font-size: 32rpx; color: var(--swancam-text-secondary); }
+.transform-label { font-size: 22rpx; color: var(--swancam-text-tertiary); }
+.transform-hint { flex: 1; text-align: right; }
+.transform-hint-text { font-size: 20rpx; color: var(--swancam-primary); }
+
+/* ========== A1: 滤镜分类 Tab ========== */
+.filter-cat-scroll { width: 100%; }
+.filter-cat-row    { display: flex; padding: 0 40rpx 12rpx; gap: 12rpx; }
+.filter-cat-tab {
+  flex-shrink: 0;
+  padding: 8rpx 24rpx;
+  border-radius: var(--radius-full);
+  background: rgba(255,255,255,0.05);
+  border: 1rpx solid rgba(255,255,255,0.06);
+  transition: all var(--duration-fast);
+}
+.filter-cat-tab.active {
+  background: var(--swancam-primary-light);
+  border-color: var(--swancam-primary);
+}
+.filter-cat-name { font-size: 22rpx; color: var(--swancam-text-tertiary); }
+.filter-cat-tab.active .filter-cat-name { color: var(--swancam-primary); font-weight: var(--font-weight-bold); }
+
+/* ========== A2: 滤镜收藏按钮 ========== */
+.fp-fav-btn {
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.2);
+  margin-left: 6rpx;
+  flex-shrink: 0;
+  transition: color var(--duration-fast);
+  padding: 4rpx;
+}
+.fp-fav-btn.fp-fav-on { color: var(--swancam-primary); }
+
+/* ========== A3: 水印分类 Tab ========== */
+.wm-cat-scroll { width: 100%; }
+.wm-cat-row    { display: flex; padding: 8rpx 40rpx 16rpx; gap: 12rpx; }
+.wm-cat-tab {
+  flex-shrink: 0;
+  padding: 8rpx 28rpx;
+  border-radius: var(--radius-full);
+  background: rgba(255,255,255,0.05);
+  border: 1rpx solid rgba(255,255,255,0.06);
+  transition: all var(--duration-fast);
+}
+.wm-cat-tab.active {
+  background: var(--swancam-primary-light);
+  border-color: var(--swancam-primary);
+}
+.wm-cat-name { font-size: 22rpx; color: var(--swancam-text-tertiary); }
+.wm-cat-tab.active .wm-cat-name { color: var(--swancam-primary); font-weight: var(--font-weight-bold); }

@@ -537,6 +537,146 @@
   letter-spacing: 2rpx;
 }
 
+/* ── B1: 九宫格辅助线 ── */
+.grid-overlay {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 8; pointer-events: none;
+}
+.grid-line { position: absolute; background: rgba(255,255,255,0.22); }
+.gl-v1, .gl-v2 { top: 0; bottom: 0; width: 1rpx; }
+.gl-h1, .gl-h2 { left: 0; right: 0; height: 1rpx; }
+.gl-v1 { left: 33.33%; } .gl-v2 { left: 66.66%; }
+.gl-h1 { top: 33.33%; }  .gl-h2 { top: 66.66%; }
+
+/* ── B2: 水平仪 ── */
+.level-bar {
+  position: absolute; bottom: calc(env(safe-area-inset-bottom) + 420rpx);
+  left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 12rpx;
+  z-index: 180; pointer-events: none;
+}
+.level-track {
+  width: 280rpx; height: 6rpx;
+  background: rgba(255,255,255,0.15);
+  border-radius: 3rpx; position: relative;
+  display: flex; align-items: center;
+}
+.level-center-mark {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  width: 2rpx; height: 18rpx;
+  background: rgba(255,255,255,0.4);
+}
+.level-bubble {
+  width: 20rpx; height: 20rpx; border-radius: 50%;
+  background: rgba(255,255,255,0.7);
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s ease, background 0.3s;
+}
+.level-bubble.level-ok { background: #4CD964; }
+.level-hint {
+  font-size: 20rpx; color: rgba(255,255,255,0.5);
+  letter-spacing: 1rpx;
+}
+
+/* ── B3: 画幅裁剪参考线 ── */
+.ratio-guide {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 9; pointer-events: none;
+}
+.ratio-mask {
+  position: absolute; left: 0; right: 0;
+  background: rgba(0,0,0,0.5);
+}
+.ratio-mask-top    { top: 0; height: 18%; }
+.ratio-mask-bottom { bottom: 0; height: 18%; }
+.ratio-label-wrap {
+  position: absolute; top: 22%; left: 24rpx;
+}
+.ratio-label {
+  font-size: 22rpx; color: rgba(255,255,255,0.5);
+  background: rgba(0,0,0,0.35); padding: 4rpx 14rpx;
+  border-radius: var(--radius-full);
+}
+
+/* ── B3: 画幅选择器 ── */
+.ratio-picker-mask {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5); z-index: 300;
+  display: flex; align-items: flex-end;
+  backdrop-filter: blur(6px);
+}
+.ratio-picker-card {
+  width: 100%; padding: 32rpx 32rpx calc(env(safe-area-inset-bottom) + 32rpx);
+  border-radius: 40rpx 40rpx 0 0;
+}
+.ratio-picker-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 40rpx;
+}
+.ratio-picker-title { font-size: 32rpx; font-weight: bold; color: #FFF; }
+.ratio-picker-close { font-size: 28rpx; color: var(--swancam-text-tertiary); padding: 8rpx; }
+.ratio-picker-grid  { display: flex; gap: 24rpx; justify-content: center; }
+.ratio-option {
+  display: flex; flex-direction: column; align-items: center; gap: 16rpx;
+  padding: 20rpx 24rpx;
+  border-radius: var(--radius-md);
+  border: 2rpx solid transparent;
+  background: rgba(255,255,255,0.05);
+  transition: all var(--duration-fast);
+}
+.ratio-option.active { border-color: var(--swancam-primary); background: var(--swancam-primary-light); }
+.ratio-thumb {
+  background: rgba(255,255,255,0.15);
+  border-radius: 4rpx;
+  border: 1rpx solid rgba(255,255,255,0.2);
+}
+.ratio-thumb-full   { width: 56rpx; height: 72rpx; }
+.ratio-thumb-1\:1   { width: 60rpx; height: 60rpx; }
+.ratio-thumb-4\:3   { width: 64rpx; height: 48rpx; }
+.ratio-thumb-3\:2   { width: 66rpx; height: 44rpx; }
+.ratio-thumb-16\:9  { width: 72rpx; height: 40rpx; }
+.ratio-name { font-size: 22rpx; color: var(--swancam-text-secondary); }
+.ratio-option.active .ratio-name { color: var(--swancam-primary); font-weight: bold; }
+
+/* ── C1: 全屏触控层 + 对焦圈 ── */
+.camera-touch-layer {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 6;
+}
+.focus-ring {
+  position: absolute;
+  width: 88rpx; height: 88rpx;
+  border: 2rpx solid rgba(255,230,0,0.9);
+  border-radius: 4rpx;
+  animation: focus-in 0.25s var(--ease-out-expo) both, focus-hold 1s 0.25s ease forwards;
+  pointer-events: none;
+}
+@keyframes focus-in {
+  from { transform: scale(1.6); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+@keyframes focus-hold {
+  0%   { border-color: rgba(255,230,0,0.9); }
+  80%  { border-color: rgba(255,230,0,0.9); }
+  100% { border-color: rgba(255,230,0,0.15); }
+}
+
+/* ── C2: 缩放指示器 ── */
+.zoom-bar {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius-full);
+  padding: 14rpx 40rpx;
+  pointer-events: none;
+}
+.zoom-text {
+  font-size: 32rpx; font-weight: bold;
+  color: #FFFFFF; letter-spacing: 2rpx;
+}
+
 /* 页面容器基础样式 */
 .camera-page {
   position: fixed;

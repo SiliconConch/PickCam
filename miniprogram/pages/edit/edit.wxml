@@ -49,6 +49,21 @@
     </view>
   </scroll-view>
 
+  <!-- C4: 旋转/翻转工具栏 -->
+  <view class="transform-bar">
+    <view class="transform-btn swancam-btn-ripple" bindtap="rotateImage">
+      <text class="transform-icon">↻</text>
+      <text class="transform-label">旋转</text>
+    </view>
+    <view class="transform-btn swancam-btn-ripple {{imageFlipped ? 'active' : ''}}" bindtap="flipImage">
+      <text class="transform-icon">⇔</text>
+      <text class="transform-label">翻转</text>
+    </view>
+    <view class="transform-hint">
+      <text class="transform-hint-text">{{imageRotation > 0 || imageFlipped ? '已变换' : ''}}</text>
+    </view>
+  </view>
+
   <!-- Tab 切换栏 -->
   <view class="tab-bar">
     <view class="tab-item {{activeTab === 'filter' ? 'active' : ''}}" bindtap="showPanel" data-panel="filter">
@@ -99,7 +114,20 @@
       />
     </view>
 
-    <!-- 滤镜 Pill 横向列表（色块 + 名称） -->
+    <!-- A1: 滤镜分类 Tab -->
+    <scroll-view class="filter-cat-scroll" scroll-x show-scrollbar="{{false}}">
+      <view class="filter-cat-row">
+        <view
+          class="filter-cat-tab {{item.id === selectedFilterCategory ? 'active' : ''}}"
+          wx:for="{{filterCategories}}" wx:key="id"
+          bindtap="onSelectFilterCategory" data-category="{{item.id}}"
+        >
+          <text class="filter-cat-name">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- A2: 滤镜 Pill 横向列表（色块 + 名称 + 收藏按钮） -->
     <scroll-view class="filter-pills-scroll" scroll-x show-scrollbar="{{false}}">
       <view class="filter-pills-row">
         <view
@@ -109,6 +137,10 @@
         >
           <view class="fp-swatch" style="background: linear-gradient(135deg, {{item.swatch[0]}} 0%, {{item.swatch[1]}} 100%);"></view>
           <text class="filter-pill-name">{{item.name}}</text>
+          <text
+            class="fp-fav-btn {{favoritedSet[item.id] ? 'fp-fav-on' : ''}}"
+            catchtap="onToggleFavorite" data-id="{{item.id}}"
+          >{{favoritedSet[item.id] ? '♥' : '♡'}}</text>
         </view>
       </view>
     </scroll-view>
@@ -126,12 +158,25 @@
 
     <view wx:if="{{watermarkEnabled}}">
 
-      <!-- 模板卡片横向列表 -->
+      <!-- A3: 水印模板分类 Tab -->
+      <scroll-view class="wm-cat-scroll" scroll-x show-scrollbar="{{false}}">
+        <view class="wm-cat-row">
+          <view
+            class="wm-cat-tab {{item.id === selectedWmCategory ? 'active' : ''}}"
+            wx:for="{{wmCategories}}" wx:key="id"
+            bindtap="onSelectWmCategory" data-category="{{item.id}}"
+          >
+            <text class="wm-cat-name">{{item.name}}</text>
+          </view>
+        </view>
+      </scroll-view>
+
+      <!-- A3: 模板卡片横向列表（修正：使用 filteredTemplates） -->
       <scroll-view class="wm-cards-scroll" scroll-x show-scrollbar="{{false}}">
         <view class="wm-cards-row">
           <view
             class="wm-card {{item.id === selectedTemplateId ? 'active' : ''}}"
-            wx:for="{{watermarkTemplates}}" wx:key="id"
+            wx:for="{{filteredTemplates}}" wx:key="id"
             bindtap="selectTemplate" data-id="{{item.id}}"
           >
             <view class="wm-card-bar"></view>

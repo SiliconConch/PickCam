@@ -1,4 +1,11 @@
 <!-- pages/profile/profile.wxml -->
+<!-- C8: 导航栏（与 settings/about 对齐） -->
+<view class="profile-nav">
+  <view class="profile-nav-back" bindtap="goBack">‹</view>
+  <text class="profile-nav-title">我的</text>
+  <view class="profile-nav-placeholder"></view>
+</view>
+
 <scroll-view class="profile-page" scroll-y>
 
   <!-- 用户信息卡 -->

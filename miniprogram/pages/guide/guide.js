@@ -54,7 +54,7 @@ Page({
   },
 
   _start() {
-    wx.setStorageSync(GUIDED_KEY, true);
-    wx.redirectTo({ url: '/pages/camera/camera' });
+    // C9: 引导结束后进入 auth 设置个人形象，auth 完成后再进 camera
+    wx.redirectTo({ url: '/pages/auth/auth' });
   }
 });

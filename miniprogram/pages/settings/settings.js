@@ -30,11 +30,20 @@ Page({
   clearCache() {
     wx.showModal({
       title: '清除缓存',
-      content: '将清除临时文件和图片缓存，不影响保存的照片。',
+      content: '将清除临时文件和图片缓存，不影响个人资料、偏好设置和照片。',
       confirmText: '清除',
       success: (res) => {
         if (!res.confirm) return;
-        wx.clearStorageSync(); // clears everything except critical keys (handled by user)
+        // 仅清除非核心 key，保留用户数据
+        const PRESERVE = [
+          'pickcam_user_profile', 'pickcam_settings', 'pickcam_stats',
+          'pickcam_favorites', 'pickcam_guided_v1', 'pickcam_layout_mode',
+          'last_capture_filter', 'is_pro'
+        ];
+        try {
+          const { keys } = wx.getStorageInfoSync();
+          keys.forEach(key => { if (!PRESERVE.includes(key)) wx.removeStorageSync(key); });
+        } catch (e) {}
         wx.showToast({ title: '缓存已清除', icon: 'success' });
       }
     });

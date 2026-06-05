@@ -116,6 +116,7 @@ Page({
   },
 
   // ── 导航 ──
+  goBack()      { wx.navigateBack(); },
   editProfile() { wx.navigateTo({ url: '/pages/auth/auth' }); },
   goSettings()  { wx.navigateTo({ url: '/pages/settings/settings' }); },
   goAbout()     { wx.navigateTo({ url: '/pages/about/about' }); },

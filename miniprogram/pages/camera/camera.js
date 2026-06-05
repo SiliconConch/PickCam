@@ -2,10 +2,11 @@
 const { FILTER_PRESETS, FILTER_THUMBNAILS } = require('../../engines/filter/presets.js');
 const APP_CONFIG = require('../../config/app.config.js');
 
-// 相机快速滤镜条：8个代表性滤镜
+// C3: 相机滤镜条扩展至全部 15 款
 const CAMERA_STRIP_IDS = [
-  'original', 'soft-portrait', 'film-memory', 'cinematic',
-  'bw-narrative', 'warm-nostalgia', 'cool-crisp', 'dark-mood'
+  'original', 'restore', 'soft-portrait', 'film-memory', 'bw-narrative',
+  'morning-light', 'warm-nostalgia', 'cinematic', 'cool-crisp', 'dark-mood',
+  'urban-street', 'natural-vivid', 'dreamy', 'pink-soft', 'vintage-oil'
 ];
 
 const FLASH_CYCLE = ['off', 'on', 'auto'];
@@ -36,24 +37,50 @@ Page({
       { id: 'f', label: 'F', value: '1.8', tip: '光圈：大光圈虚化背景' },
       { id: 'wb', label: 'WB', value: 'Auto', tip: '白平衡：矫正环境色偏' }
     ],
+    // B4/B5: 移除不可实现的 HDR/夜景/RAW/专业 条目；D3: 统一图标风格
     moreFunctions: [
-      { id: 'timer', name: '定时', icon: '⏲️' },
-      { id: 'grid', name: '网格', icon: '▦' },
-      { id: 'level', name: '水平仪', icon: '—' },
-      { id: 'ratio', name: '画幅', icon: '⧈' },
-      { id: 'hdr', name: 'HDR', icon: '☀' },
-      { id: 'night', name: '夜景', icon: '☾' },
-      { id: 'pro', name: '专业', icon: 'P' },
-      { id: 'raw', name: 'RAW', icon: 'R' },
+      { id: 'timer',  name: '定时',  icon: '⏱' },
+      { id: 'grid',   name: '网格',  icon: '⊞' },
+      { id: 'level',  name: '水平仪', icon: '◎' },
+      { id: 'ratio',  name: '画幅',  icon: '▭' },
       { id: 'settings', name: '设置', icon: '⚙' }
     ],
     showTimerPicker: false,
-    customTimerValue: 3
+    customTimerValue: 3,
+
+    // B1: 网格线
+    showGrid: false,
+    // B2: 水平仪
+    showLevel: false,
+    levelTilt: 0,
+    levelOk: false,
+    // B3: 画幅比例
+    aspectRatio: 'full',
+    showRatioPicker: false,
+    ratioOptions: [
+      { id: 'full', label: 'Full' },
+      { id: '1:1',  label: '1:1'  },
+      { id: '4:3',  label: '4:3'  },
+      { id: '3:2',  label: '3:2'  },
+      { id: '16:9', label: '16:9' },
+    ],
+    // C1: 对焦圈
+    showFocusRing: false,
+    focusX: 0,
+    focusY: 0,
+    // C2: 缩放
+    showZoomBar: false,
+    zoomValue: '1.0'
   },
 
   _cameraCtx: null,
   _recordTimer: null,
   _countdownTimer: null,
+  _focusTimer: null,
+  _zoomTimer: null,
+  _pinchStartDist: 0,
+  _pinchStartZoom: 1,
+  _currentZoom: 1,
 
   onLoad() {
     // 初始化滤镜条，加入样张隐喻配置
@@ -109,8 +136,59 @@ Page({
   },
 
   onUnload() {
-    if (this._recordTimer) clearInterval(this._recordTimer);
+    if (this._recordTimer)    clearInterval(this._recordTimer);
     if (this._countdownTimer) clearInterval(this._countdownTimer);
+    if (this._focusTimer)     clearTimeout(this._focusTimer);
+    if (this._zoomTimer)      clearTimeout(this._zoomTimer);
+    if (this.data.showLevel) {
+      try { wx.stopDeviceMotionListening(); wx.offDeviceMotionChange(); } catch (e) {}
+    }
+  },
+
+  // ── C1: 点击对焦（显示对焦圈 + 调用 setFocusPoint API） ────────
+  onCameraFocusTap(e) {
+    const { x, y } = e.detail;
+    this.setData({ showFocusRing: true, focusX: x - 44, focusY: y - 44 });
+    if (this._cameraCtx) {
+      const info = wx.getWindowInfo();
+      try {
+        this._cameraCtx.setFocusPoint({
+          x: x / info.windowWidth,
+          y: y / info.windowHeight,
+          complete: () => {}
+        });
+      } catch (err) {}
+    }
+    clearTimeout(this._focusTimer);
+    this._focusTimer = setTimeout(() => this.setData({ showFocusRing: false }), 1500);
+  },
+
+  // ── C2: 捏合缩放（双指手势 → setZoom API） ──────────────────────
+  onPinchStart(e) {
+    if (e.touches.length !== 2) return;
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    this._pinchStartDist  = Math.sqrt(dx * dx + dy * dy);
+    this._pinchStartZoom  = this._currentZoom;
+  },
+
+  onPinchMove(e) {
+    if (e.touches.length !== 2) return;
+    const dx   = e.touches[0].clientX - e.touches[1].clientX;
+    const dy   = e.touches[0].clientY - e.touches[1].clientY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const zoom = Math.max(1, Math.min(4, this._pinchStartZoom * dist / (this._pinchStartDist || 1)));
+    if (Math.abs(zoom - this._currentZoom) < 0.03) return;
+    this._currentZoom = zoom;
+    this.setData({ zoomValue: zoom.toFixed(1), showZoomBar: true });
+    if (this._cameraCtx) {
+      try { this._cameraCtx.setZoom({ zoom, complete: () => {} }); } catch (err) {}
+    }
+  },
+
+  onPinchEnd() {
+    clearTimeout(this._zoomTimer);
+    this._zoomTimer = setTimeout(() => this.setData({ showZoomBar: false }), 2000);
   },
 
   // ── 选择滤镜 ──────────────────────────────────────────────────
@@ -168,19 +246,61 @@ Page({
 
   onMoreFuncTap(e) {
     const id = e.currentTarget.dataset.id;
+    this.toggleMorePanel();
+
     if (id === 'settings') {
       wx.navigateTo({ url: '/pages/settings/settings' });
-      this.toggleMorePanel();
       return;
     }
     if (id === 'timer') {
       this.setData({ showTimerPicker: true });
-      this.toggleMorePanel();
       return;
     }
-    wx.showToast({ title: `功能 ${id} 敬请期待`, icon: 'none' });
-    this.toggleMorePanel();
+    // B1: 网格线切换
+    if (id === 'grid') {
+      this.setData({ showGrid: !this.data.showGrid });
+      wx.showToast({ title: this.data.showGrid ? '网格线已开启' : '网格线已关闭', icon: 'none', duration: 800 });
+      if (wx.vibrateShort) wx.vibrateShort({ type: 'light' });
+      return;
+    }
+    // B2: 水平仪切换
+    if (id === 'level') {
+      const show = !this.data.showLevel;
+      this.setData({ showLevel: show });
+      if (show) {
+        try {
+          wx.startDeviceMotionListening({ interval: 'ui' });
+          wx.onDeviceMotionChange(res => {
+            const gamma = Math.max(-45, Math.min(45, res.gamma || 0));
+            this.setData({ levelTilt: gamma / 45, levelOk: Math.abs(gamma) < 3 });
+          });
+        } catch (e) {}
+        wx.showToast({ title: '水平仪已开启', icon: 'none', duration: 800 });
+      } else {
+        try { wx.stopDeviceMotionListening(); wx.offDeviceMotionChange(); } catch (e) {}
+      }
+      if (wx.vibrateShort) wx.vibrateShort({ type: 'light' });
+      return;
+    }
+    // B3: 画幅比例选择
+    if (id === 'ratio') {
+      this.setData({ showRatioPicker: true });
+      return;
+    }
     if (wx.vibrateShort) wx.vibrateShort({ type: 'light' });
+  },
+
+  // B3: 选择画幅
+  selectRatio(e) {
+    const ratio = e.currentTarget.dataset.ratio;
+    this.setData({ aspectRatio: ratio, showRatioPicker: false });
+    // 传递给编辑页
+    getApp().globalData.captureAspectRatio = ratio;
+    if (wx.vibrateShort) wx.vibrateShort({ type: 'light' });
+  },
+
+  closeRatioPicker() {
+    this.setData({ showRatioPicker: false });
   },
 
   onTimerSliderChange(e) {
