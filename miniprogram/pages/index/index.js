@@ -1,7 +1,7 @@
 // pages/index/index.js  V2 Fresh
-const APP_CONFIG  = require('../../config/app.config.js');
-const STATS_KEY   = 'pickcam_stats';
-const GUIDED_KEY  = 'pickcam_guided_v1';
+const APP_CONFIG = require('../../config/app.config.js');
+const { SimpleStats, StreakTracker } = require('../../utils/statistics.js');
+const GUIDED_KEY = 'pickcam_guided_v1';
 
 // 根据小时生成打招呼文案
 function getGreeting() {
@@ -43,8 +43,8 @@ Page({
   },
 
   _refreshData() {
-    const stats  = wx.getStorageSync(STATS_KEY) || { photos: 0, filters: 0, watermarks: 0 };
-    const streak = wx.getStorageSync('pickcam_streak') || 0;
+    const stats  = SimpleStats.get();                       // R2
+    const streak = wx.getStorageSync('pickcam_streak') || 0; // R1: 由 StreakTracker.update() 写入
     this.setData({
       greeting: getGreeting(),
       todayStr: getTodayStr(),

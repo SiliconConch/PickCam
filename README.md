@@ -544,7 +544,9 @@ module.exports = {
 | `pickcam_stats` | 使用统计（作品数 / 滤镜次数 / 水印次数） |
 | `pickcam_favorites` | 收藏的滤镜 ID 列表 |
 | `pickcam_layout_mode` | 相机布局偏好（`immersive` / `classic`） |
-| `pickcam_streak` | 连续拍摄天数（⚠️ 当前只读不写，见已知问题） |
+| `pickcam_stats_simple` | 简单使用计数（作品数 / 滤镜次数 / 水印次数） |
+| `pickcam_streak` | 连续拍摄天数（每次保存照片时由 `StreakTracker.update()` 写入） |
+| `pickcam_last_shoot_date` | 最后一次拍摄日期（用于 streak 计算） |
 | `last_capture_filter` | 上次拍摄使用的滤镜 ID |
 | `is_pro` | Pro 版授权标记 |
 
@@ -630,38 +632,14 @@ chore:    构建/工具链变更
 - [x] 个人中心「应用设置」入口
 
 ### v1.4（规划中）
-- [ ] `pickcam_streak` 连续拍摄天数写入逻辑
-- [ ] 画幅比例实际传递至编辑/保存流程
-- [ ] 统计数据结构统一（index / profile / statistics.js）
-- [ ] 更多面板 Grid / Level 激活态图标指示
-- [ ] index 页 `app.json` 导航栏颜色适配浅色主题
-- [ ] 图片裁剪工具
+- [ ] 图片裁剪工具（自由比例 + 预设比例）
 - [ ] 录像后进入视频编辑页
+- [ ] 水印模板自定义编辑器
 
 ### v2.0（长期规划）
-- [ ] 快门音效资源文件
 - [ ] 作品社区（需服务端）
 - [ ] Pro 订阅（去水印 + 专属模板）
 - [ ] 夜景增强算法
-
----
-
-## ⚠️ 已知待优化项
-
-以下问题已识别，将在后续版本修复：
-
-| 优先级 | 编号 | 位置 | 描述 |
-|--------|------|------|------|
-| 🔴 | R1 | `index.js` | `pickcam_streak` 连续天数只读不写，首页始终显示 0 |
-| 🔴 | R2 | `statistics.js` / `profile.js` | 两处统计读写的数据结构字段名不一致，导致 profile 页数据为 0 |
-| 🔴 | R3 | `edit.js` | 画幅比例（`captureAspectRatio`）未在 onLoad 中读取，选择的比例对保存无影响 |
-| 🟠 | R4 | `geocoding.js` | `TENCENT_MAP_KEY = ''`，逆地理编码静默失败，水印位置为空 |
-| 🟠 | R5 | `assets/audio/` | `shutter.mp3` 缺失，soundFeedback 开关无音效 |
-| 🟡 | R6 | `app.json` | `navigationBarBackgroundColor: "#0A0A0A"` 与 index 页浅色主题不协调 |
-| 🟡 | R7 | `camera.wxml` | 更多面板内网格线 / 水平仪图标无开启状态高亮 |
-| 🟡 | R8 | `components/filter-selector/` | 整个组件未被任何页面使用，是完整死代码 |
-| 🟡 | R9 | `config/app.config.js` | `COLORS` 对象含已废弃配色（与 Swancam 矛盾），应清理 |
-| 🟢 | R10 | `about.js` | `shareApp()` 调用已弃用的 `wx.showShareMenu`，应改为 `open-type="share"` 按钮 |
 
 ---
 

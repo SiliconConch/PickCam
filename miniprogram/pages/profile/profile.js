@@ -5,6 +5,7 @@ const SETTINGS_KEY = 'pickcam_settings';
 
 const { FILTER_PRESETS } = require('../../engines/filter/presets.js');
 const { WATERMARK_TEMPLATES } = require('../../config/watermark-templates.js');
+const { SimpleStats } = require('../../utils/statistics.js');
 
 // 9宫格位置选项（用于UI）
 const POSITION_OPTIONS = [
@@ -51,8 +52,8 @@ Page({
   },
 
   _loadData() {
-    const profile  = wx.getStorageSync(PROFILE_KEY) || null;
-    const stats    = wx.getStorageSync(STATS_KEY)   || { photos: 0, filters: 0, watermarks: 0 };
+    const profile = wx.getStorageSync(PROFILE_KEY) || null;
+    const stats   = SimpleStats.get();  // R2: 使用独立简单计数器
     const saved    = wx.getStorageSync(SETTINGS_KEY) || {};
     const settings = Object.assign({
       autoLocation:      true,

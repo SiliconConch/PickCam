@@ -8,10 +8,7 @@ Page({
     wx.navigateBack();
   },
 
-  shareApp() {
-    wx.showShareMenu({ withShareTicket: false, menus: ['shareAppMessage', 'shareTimeline'] });
-  },
-
+  // R10: shareApp() 已移除，改为 button open-type="share" 触发 onShareAppMessage
   onShareAppMessage() {
     return {
       title: '拾光相机 — 用光影，讲述属于你的故事',

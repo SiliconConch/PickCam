@@ -382,12 +382,18 @@ Page({
 
   // ── E1: 快门音效初始化 ────────────────────────────────────────
   _initShutterAudio() {
+    // R5: 文件缺失时静默降级，不影响其他功能
+    // 需在项目中放置 miniprogram/assets/audio/shutter.mp3
     try {
       this._shutterAudio = wx.createInnerAudioContext();
       this._shutterAudio.obeyMuteSwitch = false;
-      // 音效文件路径：需将快门音效放至 /assets/audio/shutter.mp3
       this._shutterAudio.src = '/assets/audio/shutter.mp3';
-    } catch (e) {}
+      this._shutterAudio.onError(() => {
+        this._shutterAudio = null; // 文件不存在时置空，_playShutterSound 静默跳过
+      });
+    } catch (e) {
+      this._shutterAudio = null;
+    }
   },
 
   _playShutterSound() {

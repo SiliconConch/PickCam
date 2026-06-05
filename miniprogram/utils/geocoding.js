@@ -2,12 +2,17 @@
 // 地理位置获取与逆地理编码
 
 // ============================================================
-// 腾讯地图 API Key 配置
-// 申请地址：https://lbs.qq.com/dev/console/application/mine
-// 申请后在微信公众平台 → 开发 → 开发管理 → 服务器域名 中
-// 将 apis.map.qq.com 添加到 request 合法域名
+// R4: 腾讯地图 API Key 配置（必填，否则水印位置为空）
+//
+// 配置步骤：
+//   1. 申请 Key：https://lbs.qq.com/dev/console/application/mine
+//   2. 将 apis.map.qq.com 加入小程序「服务器域名」request 白名单
+//   3. 将 Key 填入下方 TENCENT_MAP_KEY
+//
+// 未配置时：wx.getLocation 仍可获取经纬度，但无法转换为中文地名，
+//           水印中位置信息将保持为空，其余功能不受影响。
 // ============================================================
-const TENCENT_MAP_KEY = ''; // [重要] 请在此填入您的腾讯地图 API Key，否则无法将经纬度转换为中文地址
+const TENCENT_MAP_KEY = ''; // ← 填入你的腾讯地图 WebService API Key
 
 const GeoManager = {
   _cachedLocation: null,

@@ -69,10 +69,11 @@
 
   <!-- 操作区 -->
   <view class="action-section">
-    <view class="about-card" bindtap="shareApp">
+    <!-- R10: 使用 open-type="share" 替代废弃的 wx.showShareMenu -->
+    <button class="about-card about-share-btn" open-type="share">
       <text class="about-card-icon">↗</text>
       <text class="about-card-label">分享给朋友</text>
-    </view>
+    </button>
     <view class="about-card" bindtap="openFeedback">
       <text class="about-card-icon">✉</text>
       <text class="about-card-label">意见反馈</text>

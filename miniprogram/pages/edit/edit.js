@@ -11,7 +11,7 @@ const { CaptionManager }        = require('../../config/captions.js');
 const { ExifReader }            = require('../../utils/exif.js');
 const { GeoManager }            = require('../../utils/geocoding.js');
 const { RecentUsageStorage }    = require('../../utils/storage.js');
-const { StatisticsManager }     = require('../../utils/statistics.js');
+const { StatisticsManager, SimpleStats, StreakTracker } = require('../../utils/statistics.js');
 const {
   sleep, cleanupTempFile, compressImageIfNeeded,
   saveToAlbum, showError, showSuccess
@@ -94,6 +94,8 @@ Page({
     // 图片变换（旋转/翻转）
     imageRotation: 0,     // 0 / 90 / 180 / 270
     imageFlipped: false,
+    // R3: 画幅裁剪比例（从相机页传入）
+    captureAspectRatio: 'full',
 
     // 当前滤镜名（预计算，供显示用）
     currentFilterName: '原片'
@@ -133,7 +135,10 @@ Page({
 
     // 拍摄时预选的滤镜优先，否则用个人默认 → 最近记录
     const captureFilterId = app.globalData.captureFilterId || null;
-    app.globalData.captureFilterId = null; // 清除，避免重复使用
+    app.globalData.captureFilterId = null;
+    // R3: 读取相机页选择的画幅比例
+    const captureAspectRatio = app.globalData.captureAspectRatio || 'full';
+    app.globalData.captureAspectRatio = null;
 
     const appSettings = app.globalData.appSettings || {};
     const lastTemplateId = captureFilterId
@@ -175,7 +180,8 @@ Page({
       previewWidth, previewHeight,
       wmPosition: pos, wmFontSize: fontSize, wmOpacity,
       favoritedFilters, favoritedSet,
-      filteredTemplates: WATERMARK_TEMPLATES   // 初始化为全部
+      filteredTemplates: WATERMARK_TEMPLATES,  // 初始化为全部
+      captureAspectRatio                       // R3
     });
 
     this._loadPhotoMeta(photos[0]);
@@ -899,6 +905,52 @@ Page({
     });
   },
 
+  // ── R3: 画幅裁剪（中心裁剪，保留主体） ──────────────────────────
+  async _applyCrop(filePath, aspectRatio) {
+    if (!aspectRatio || aspectRatio === 'full') return filePath;
+    const parts = aspectRatio.split(':');
+    if (parts.length !== 2) return filePath;
+    const targetRatio = parseFloat(parts[0]) / parseFloat(parts[1]);
+    if (!isFinite(targetRatio) || targetRatio <= 0) return filePath;
+
+    return new Promise((resolve) => {
+      wx.getImageInfo({
+        src: filePath,
+        success: ({ width, height }) => {
+          const srcRatio = width / height;
+          let cropX, cropY, cropW, cropH;
+          if (srcRatio > targetRatio) {
+            // 图片偏宽 → 裁左右
+            cropH = height;
+            cropW = Math.round(height * targetRatio);
+            cropX = Math.round((width - cropW) / 2);
+            cropY = 0;
+          } else {
+            // 图片偏高 → 裁上下
+            cropW = width;
+            cropH = Math.round(width / targetRatio);
+            cropX = 0;
+            cropY = Math.round((height - cropH) / 2);
+          }
+          const offCanvas = wx.createOffscreenCanvas({ type: '2d', width: cropW, height: cropH });
+          const ctx = offCanvas.getContext('2d');
+          const img = offCanvas.createImage();
+          img.onload = () => {
+            ctx.drawImage(img, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
+            wx.canvasToTempFilePath({
+              canvas: offCanvas, fileType: 'jpg', quality: 0.95,
+              success: res => resolve(res.tempFilePath),
+              fail:    () => resolve(filePath)
+            });
+          };
+          img.onerror = () => resolve(filePath);
+          img.src = filePath;
+        },
+        fail: () => resolve(filePath)
+      });
+    });
+  },
+
   // ── 刷新当前位置（水印面板快捷按钮）──
   async refreshLocation() {
     if (this.data.locationLoading) return;
@@ -1084,9 +1136,13 @@ Page({
   async _processPhotoFull(photo, wmConfigOverride) {
     let path = photo.tempFilePath;
 
-    // Step 0: 旋转/翻转变换（保存时应用到实际图片）
+    // Step 0: 旋转/翻转变换
     const transformed = await this._applyTransform(path);
     if (transformed !== path) { cleanupTempFile(path); path = transformed; }
+
+    // Step 0.5: R3 画幅裁剪（中心裁剪到指定比例）
+    const cropped = await this._applyCrop(path, this.data.captureAspectRatio);
+    if (cropped !== path) { cleanupTempFile(path); path = cropped; }
 
     const compressed = await compressImageIfNeeded(path, APP_CONFIG.MAX_IMAGE_SIZE);
     if (compressed !== path) path = compressed;
@@ -1113,7 +1169,7 @@ Page({
     return path;
   },
 
-  // ── 记录统计 ──
+  // ── 记录统计（R1 + R2：同步写入 streak 和简单计数器） ──
   _recordStats() {
     try {
       this._statsMgr.recordPhotoProcess(
@@ -1121,6 +1177,12 @@ Page({
         this.data.selectedTemplateId,
         this.data.photoMeta.location
       );
+      // R2: 写入独立简单计数器（供 index / profile 页读取）
+      const usedFilter    = this.data.selectedFilterId !== 'original';
+      const usedWatermark = this.data.watermarkEnabled;
+      SimpleStats.record(usedFilter, usedWatermark);
+      // R1: 更新连续拍摄天数
+      StreakTracker.update();
     } catch (e) {}
   },
 

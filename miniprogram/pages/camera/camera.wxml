@@ -175,11 +175,17 @@
         <view class="more-panel-close" bindtap="toggleMorePanel">✕</view>
       </view>
       <view class="more-grid">
-        <view class="more-grid-item ripple-btn" wx:for="{{moreFunctions}}" wx:key="id" bindtap="onMoreFuncTap" data-id="{{item.id}}">
+        <view
+          class="more-grid-item ripple-btn {{(item.id === 'grid' && showGrid) || (item.id === 'level' && showLevel) ? 'func-active' : ''}}"
+          wx:for="{{moreFunctions}}" wx:key="id"
+          bindtap="onMoreFuncTap" data-id="{{item.id}}"
+        >
           <view class="more-grid-icon-box">
             <text class="more-grid-icon">{{item.icon}}</text>
           </view>
           <text class="more-grid-label">{{item.name}}</text>
+          <!-- R7: 激活态小圆点 -->
+          <view class="func-active-dot" wx:if="{{(item.id === 'grid' && showGrid) || (item.id === 'level' && showLevel)}}"></view>
         </view>
       </view>
     </view>

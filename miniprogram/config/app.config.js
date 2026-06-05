@@ -31,15 +31,6 @@ module.exports = {
     imageUrl: '/assets/share-cover.png'
   },
 
-  // 颜色主题
-  COLORS: {
-    primary: '#2C3E50',
-    accent: '#D4A574',
-    emphasis: '#E67E22',
-    bg: '#F5F5F5',
-    text: '#333333',
-    textSecondary: '#888888',
-    border: '#E0E0E0',
-    white: '#FFFFFF'
-  }
+  // 颜色令牌已迁移至 app.wxss 的 Swancam / Fresh CSS 变量系统
+  // 请勿在此添加颜色配置，统一使用 var(--swancam-*) 或 var(--fresh-*)
 };

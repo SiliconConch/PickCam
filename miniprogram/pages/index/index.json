@@ -1,7 +1,7 @@
 {
   "navigationBarTitleText": "拾光相机",
-  "navigationBarBackgroundColor": "#0A0A0A",
-  "navigationBarTextStyle": "white",
-  "backgroundColor": "#0A0A0A",
+  "navigationBarBackgroundColor": "#F7F6F2",
+  "navigationBarTextStyle": "black",
+  "backgroundColor": "#F7F6F2",
   "usingComponents": {}
 }

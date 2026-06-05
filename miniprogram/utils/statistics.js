@@ -98,4 +98,57 @@ class StatisticsManager {
   }
 }
 
-module.exports = { StatisticsManager };
+// ─────────────────────────────────────────────
+// R2: 简单计数器（供 index / profile 页显示用）
+// 独立 key，避免与 StatisticsManager 格式冲突
+// ─────────────────────────────────────────────
+const SIMPLE_KEY = 'pickcam_stats_simple';
+
+const SimpleStats = {
+  /** 获取简单计数 */
+  get() {
+    return wx.getStorageSync(SIMPLE_KEY) || { photos: 0, filters: 0, watermarks: 0 };
+  },
+
+  /** 记录一次保存 */
+  record(usedFilter, usedWatermark) {
+    const s = this.get();
+    s.photos    = (s.photos    || 0) + 1;
+    if (usedFilter)    s.filters    = (s.filters    || 0) + 1;
+    if (usedWatermark) s.watermarks = (s.watermarks || 0) + 1;
+    try { wx.setStorageSync(SIMPLE_KEY, s); } catch (e) {}
+  },
+
+  /** 清除 */
+  clear() {
+    try { wx.removeStorageSync(SIMPLE_KEY); } catch (e) {}
+  }
+};
+
+// ─────────────────────────────────────────────
+// R1: 连续拍摄天数（streak）写入逻辑
+// ─────────────────────────────────────────────
+const STREAK_KEY     = 'pickcam_streak';
+const LAST_DATE_KEY  = 'pickcam_last_shoot_date';
+
+const StreakTracker = {
+  /** 每次保存照片时调用，返回最新 streak 值 */
+  update() {
+    const today     = new Date().toDateString();
+    const lastDate  = wx.getStorageSync(LAST_DATE_KEY) || '';
+    const streak    = wx.getStorageSync(STREAK_KEY)    || 0;
+
+    if (lastDate === today) return streak; // 今天已记录，不重复计
+
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    const newStreak = lastDate === yesterday ? streak + 1 : 1;
+
+    try {
+      wx.setStorageSync(LAST_DATE_KEY, today);
+      wx.setStorageSync(STREAK_KEY, newStreak);
+    } catch (e) {}
+    return newStreak;
+  }
+};
+
+module.exports = { StatisticsManager, SimpleStats, StreakTracker };
