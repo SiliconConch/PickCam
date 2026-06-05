@@ -1,0 +1,130 @@
+<!-- pages/settings/settings.wxml -->
+<view class="settings-page">
+
+  <!-- 顶部导航栏 -->
+  <view class="settings-nav">
+    <view class="settings-nav-back" bindtap="goBack">‹</view>
+    <text class="settings-nav-title">设置</text>
+    <view class="settings-nav-placeholder"></view>
+  </view>
+
+  <!-- 拍摄功能 -->
+  <view class="section">
+    <text class="section-title">拍摄功能</text>
+    <view class="card">
+      <view class="row">
+        <view class="row-left">
+          <text class="row-icon">📍</text>
+          <view class="row-text">
+            <text class="row-label">自动获取位置</text>
+            <text class="row-hint">水印中自动填入地点</text>
+          </view>
+        </view>
+        <switch checked="{{settings.autoLocation}}" color="#FF2D55"
+          data-key="autoLocation" bindchange="onToggle"/>
+      </view>
+      <view class="divider"></view>
+      <view class="row">
+        <view class="row-left">
+          <text class="row-icon">🕐</text>
+          <view class="row-text">
+            <text class="row-label">自动时间戳</text>
+            <text class="row-hint">水印中自动填入拍摄时间</text>
+          </view>
+        </view>
+        <switch checked="{{settings.autoTimestamp}}" color="#FF2D55"
+          data-key="autoTimestamp" bindchange="onToggle"/>
+      </view>
+    </view>
+  </view>
+
+  <!-- 交互体验 -->
+  <view class="section">
+    <text class="section-title">交互体验</text>
+    <view class="card">
+      <view class="row">
+        <view class="row-left">
+          <text class="row-icon">📳</text>
+          <view class="row-text">
+            <text class="row-label">震动反馈</text>
+            <text class="row-hint">操作时轻微震动提示</text>
+          </view>
+        </view>
+        <switch checked="{{settings.hapticFeedback}}" color="#FF2D55"
+          data-key="hapticFeedback" bindchange="onToggle"/>
+      </view>
+      <view class="divider"></view>
+      <view class="row">
+        <view class="row-left">
+          <text class="row-icon">🔔</text>
+          <view class="row-text">
+            <text class="row-label">声音反馈</text>
+            <text class="row-hint">拍摄时播放快门声</text>
+          </view>
+        </view>
+        <switch checked="{{settings.soundFeedback}}" color="#FF2D55"
+          data-key="soundFeedback" bindchange="onToggle"/>
+      </view>
+    </view>
+  </view>
+
+  <!-- 存储 -->
+  <view class="section">
+    <text class="section-title">存储</text>
+    <view class="card">
+      <view class="row">
+        <view class="row-left">
+          <text class="row-icon">🖼</text>
+          <view class="row-text">
+            <text class="row-label">同时保存原图</text>
+            <text class="row-hint">保存处理后图片时一并保留原图</text>
+          </view>
+        </view>
+        <switch checked="{{settings.saveOriginal}}" color="#FF2D55"
+          data-key="saveOriginal" bindchange="onToggle"/>
+      </view>
+      <view class="divider"></view>
+      <view class="row row-tap" bindtap="clearCache">
+        <view class="row-left">
+          <text class="row-icon">🗑</text>
+          <view class="row-text">
+            <text class="row-label">清除缓存</text>
+            <text class="row-hint">清理临时图片和处理缓存</text>
+          </view>
+        </view>
+        <text class="row-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 其他 -->
+  <view class="section">
+    <text class="section-title">其他</text>
+    <view class="card">
+      <view class="row row-tap" bindtap="goAbout">
+        <view class="row-left">
+          <text class="row-icon">◎</text>
+          <view class="row-text">
+            <text class="row-label">关于拾光相机</text>
+          </view>
+        </view>
+        <text class="row-arrow">›</text>
+      </view>
+      <view class="divider"></view>
+      <view class="row row-tap" bindtap="openPrivacy">
+        <view class="row-left">
+          <text class="row-icon">🔒</text>
+          <view class="row-text">
+            <text class="row-label">隐私政策</text>
+          </view>
+        </view>
+        <text class="row-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="settings-footer">
+    <text class="footer-text">拾光相机 v1.2.0</text>
+  </view>
+
+</view>

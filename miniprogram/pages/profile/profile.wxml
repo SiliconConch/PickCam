@@ -1,0 +1,169 @@
+<!-- pages/profile/profile.wxml -->
+<scroll-view class="profile-page" scroll-y>
+
+  <!-- 用户信息卡 -->
+  <view class="user-card">
+    <view class="user-card-bg"></view>
+    <view class="user-info-row">
+      <view class="avatar-wrap">
+        <image wx:if="{{profile && profile.avatar}}" src="{{profile.avatar}}" class="user-avatar" mode="aspectFill"/>
+        <view wx:else class="user-avatar-ph">
+          <text class="avatar-ph-text">☺</text>
+        </view>
+      </view>
+      <view class="user-text">
+        <text class="user-name">{{profile ? profile.nickname : '拾光用户'}}</text>
+        <text class="user-since">{{profile ? profile.createdAt + ' 加入' : '尚未设置资料'}}</text>
+      </view>
+      <view class="edit-profile-btn" bindtap="editProfile">
+        <text class="edit-btn-text">编辑</text>
+      </view>
+    </view>
+
+    <!-- 数据统计 -->
+    <view class="stats-row">
+      <view class="stat-item">
+        <text class="stat-num">{{stats.photos}}</text>
+        <text class="stat-label">作品</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <text class="stat-num">{{stats.filters}}</text>
+        <text class="stat-label">滤镜使用</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <text class="stat-num">{{stats.watermarks}}</text>
+        <text class="stat-label">水印使用</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ════ 默认拍摄设置 ════ -->
+  <view class="section-head">
+    <text class="section-title">默认拍摄设置</text>
+    <text class="section-sub">每次打开编辑页时自动应用</text>
+  </view>
+
+  <!-- 默认滤镜 -->
+  <view class="pref-block">
+    <text class="pref-label">默认滤镜</text>
+    <scroll-view class="pref-filter-scroll" scroll-x show-scrollbar="{{false}}">
+      <view class="pref-filter-row">
+        <view
+          class="pref-filter-pill {{item.id === settings.defaultFilterId ? 'active' : ''}}"
+          wx:for="{{filterPresets}}" wx:key="id"
+          bindtap="selectDefaultFilter" data-id="{{item.id}}"
+        >
+          <view class="pref-swatch" style="background: linear-gradient(135deg, {{item.swatch[0]}} 0%, {{item.swatch[1]}} 100%);"></view>
+          <text class="pref-filter-name">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 拍摄开关 -->
+  <view class="menu-section" style="margin-top:0;">
+    <view class="menu-list">
+      <view class="menu-item">
+        <text class="menu-icon">📍</text>
+        <text class="menu-label">自动获取位置</text>
+        <switch checked="{{settings.autoLocation}}" color="#FF2D55" bindchange="onToggle" data-key="autoLocation"/>
+      </view>
+      <view class="menu-item">
+        <text class="menu-icon">🕐</text>
+        <text class="menu-label">自动添加时间戳</text>
+        <switch checked="{{settings.autoTimestamp}}" color="#FF2D55" bindchange="onToggle" data-key="autoTimestamp"/>
+      </view>
+      <view class="menu-item">
+        <text class="menu-icon">📷</text>
+        <text class="menu-label">同时保存原图</text>
+        <switch checked="{{settings.saveOriginal}}" color="#FF2D55" bindchange="onToggle" data-key="saveOriginal"/>
+      </view>
+      <view class="menu-item menu-last">
+        <text class="menu-icon">📳</text>
+        <text class="menu-label">触觉反馈</text>
+        <switch checked="{{settings.hapticFeedback}}" color="#FF2D55" bindchange="onToggle" data-key="hapticFeedback"/>
+      </view>
+    </view>
+  </view>
+
+  <!-- ════ 默认水印设置 ════ -->
+  <view class="section-head">
+    <text class="section-title">默认水印设置</text>
+    <text class="section-sub">新建编辑时的水印初始状态</text>
+  </view>
+
+  <!-- 水印模板选择 -->
+  <view class="pref-block">
+    <text class="pref-label">默认模板</text>
+    <scroll-view class="pref-tmpl-scroll" scroll-x show-scrollbar="{{false}}">
+      <view class="pref-tmpl-row">
+        <view
+          class="pref-tmpl-card {{item.id === settings.defaultTemplateId ? 'active' : ''}}"
+          wx:for="{{watermarkTemplates}}" wx:key="id"
+          bindtap="selectDefaultTemplate" data-id="{{item.id}}"
+        >
+          <view class="pref-tmpl-bar"></view>
+          <text class="pref-tmpl-name">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 水印位置（九宫格） -->
+  <view class="pref-block">
+    <text class="pref-label">默认位置</text>
+    <view class="pos-grid-mini">
+      <view
+        class="pos-cell-mini {{item.id === settings.defaultWmPosition ? 'active' : ''}}"
+        wx:for="{{positionOptions}}" wx:key="id"
+        bindtap="selectDefaultWmPos" data-pos="{{item.id}}"
+      >
+        <text class="pos-label-mini">{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 水印透明度 -->
+  <view class="pref-block">
+    <view class="pref-slider-row">
+      <text class="pref-label" style="margin-bottom:0; flex-shrink:0; width:80rpx;">透明度</text>
+      <slider class="pref-sl"
+        min="0" max="100" value="{{settings.defaultWmOpacity}}"
+        activeColor="#FF2D55" backgroundColor="rgba(255,255,255,0.1)" block-color="#FFFFFF"
+        bindchange="onDefaultOpacityChange" bindchanging="onDefaultOpacityChange"
+      />
+      <text class="pref-slider-val">{{settings.defaultWmOpacity}}%</text>
+    </view>
+  </view>
+
+  <!-- ════ 应用设置 ════ -->
+  <view class="menu-section">
+    <text class="menu-section-title">应用</text>
+    <view class="menu-list">
+      <view class="menu-item" bindtap="goAbout">
+        <text class="menu-icon">◎</text>
+        <text class="menu-label">关于拾光相机</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item menu-last" bindtap="clearData">
+        <text class="menu-icon">🗑</text>
+        <text class="menu-label">清除使用记录</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退出 -->
+  <view class="logout-wrap" wx:if="{{profile}}">
+    <view class="logout-btn" bindtap="logout">退出登录</view>
+  </view>
+
+  <!-- 底部版本 -->
+  <view class="profile-footer">
+    <text class="footer-version">拾光相机 v1.2.0</text>
+    <text class="footer-copy">© 2026 PickCam</text>
+  </view>
+
+</scroll-view>

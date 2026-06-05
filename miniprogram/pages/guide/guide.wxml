@@ -1,0 +1,111 @@
+<!-- pages/guide/guide.wxml -->
+<view class="guide-page">
+
+  <!-- 跳过按钮 -->
+  <view class="skip-btn" bindtap="skip">跳过</view>
+
+  <!-- 主滑动区域 -->
+  <swiper
+    class="slides-swiper"
+    current="{{current}}"
+    bindchange="onChange"
+    duration="380"
+    circular="{{false}}"
+    easing-function="easeInOutCubic"
+  >
+    <swiper-item wx:for="{{slides}}" wx:key="illus" class="slide-item">
+
+      <!-- 插画区（每页不同） -->
+      <view class="illus-area" style="{{item.accentStyle}}">
+
+        <!-- ── 品牌欢迎页 ── -->
+        <view class="illus illus-brand" wx:if="{{item.illus === 'brand'}}">
+          <view class="brand-ring br1"></view>
+          <view class="brand-ring br2"></view>
+          <view class="brand-ring br3"></view>
+          <view class="brand-cam-wrap">
+            <view class="bc-lens-ring bl1"></view>
+            <view class="bc-lens-ring bl2"></view>
+            <view class="bc-lens-core">
+              <view class="bc-lens-dot"></view>
+            </view>
+          </view>
+        </view>
+
+        <!-- ── 滤镜页 ── -->
+        <view class="illus illus-filter" wx:elif="{{item.illus === 'filter'}}">
+          <view class="fstrips-wrap">
+            <view class="fstrip fs1"></view>
+            <view class="fstrip fs2"></view>
+            <view class="fstrip fs3"></view>
+            <view class="fstrip fs4"></view>
+            <view class="fstrip fs5"></view>
+          </view>
+          <view class="filter-badge">
+            <text class="filter-badge-text">FILM</text>
+          </view>
+        </view>
+
+        <!-- ── 水印页 ── -->
+        <view class="illus illus-watermark" wx:elif="{{item.illus === 'watermark'}}">
+          <view class="photo-outer-glow"></view>
+          <view class="mock-photo">
+            <view class="mock-sky">
+              <view class="mock-sun"></view>
+              <view class="mock-mist"></view>
+            </view>
+            <view class="mock-ground"></view>
+            <view class="mock-wm-bar">
+              <view class="mock-wm-indicator"></view>
+              <text class="mock-wm-text">2026 · 北京 · 拾光</text>
+              <view class="mock-wm-rule"></view>
+            </view>
+          </view>
+        </view>
+
+        <!-- ── 时光语页 ── -->
+        <view class="illus illus-caption" wx:elif="{{item.illus === 'caption'}}">
+          <view class="quote-card qc-main">
+            <text class="qc-mark">"</text>
+            <text class="qc-word">此时此刻</text>
+            <text class="qc-mark qc-mark-r">"</text>
+          </view>
+          <view class="quote-card qc-sub1">
+            <text class="qc-word-sm">温柔的光</text>
+          </view>
+          <view class="quote-card qc-sub2">
+            <text class="qc-word-sm">岁月静好</text>
+          </view>
+          <view class="quote-card qc-sub3">
+            <text class="qc-word-sm">今日限定</text>
+          </view>
+        </view>
+
+      </view>
+
+      <!-- 文字区 -->
+      <view class="slide-copy">
+        <text class="slide-title">{{item.title}}</text>
+        <text class="slide-desc">{{item.desc}}</text>
+      </view>
+
+    </swiper-item>
+  </swiper>
+
+  <!-- 底部控件 -->
+  <view class="guide-footer">
+    <!-- 进度点 -->
+    <view class="progress-dots">
+      <view
+        class="pdot {{index === current ? 'active' : ''}}"
+        wx:for="{{slides}}" wx:key="index"
+      ></view>
+    </view>
+    <!-- 操作按钮 -->
+    <view class="next-btn" bindtap="goNext">
+      <text class="next-label">{{current === slides.length - 1 ? '开始使用' : '下一步'}}</text>
+      <text class="next-arrow">→</text>
+    </view>
+  </view>
+
+</view>

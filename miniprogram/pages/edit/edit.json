@@ -1,0 +1,7 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "caption-editor": "/components/caption-editor/caption-editor",
+    "emoji-picker": "/components/emoji-picker/emoji-picker"
+  }
+}

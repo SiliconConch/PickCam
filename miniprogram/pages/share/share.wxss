@@ -1,0 +1,172 @@
+/* pages/share/share.wxss - Swancam Dark Share Experience */
+
+.share-page {
+  min-height: 100vh;
+  background: var(--swancam-bg);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========== 自定义导航栏 ========== */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(env(safe-area-inset-top) + 20rpx) 32rpx 20rpx;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-back {
+  font-size: 32rpx;
+  color: var(--swancam-primary);
+  padding: 8rpx 0;
+  font-weight: var(--font-weight-med);
+}
+
+.nav-title {
+  font-size: 32rpx;
+  font-weight: var(--font-weight-bold);
+  color: var(--swancam-text-primary);
+  letter-spacing: 2rpx;
+}
+
+.nav-right {
+  width: 80rpx;
+}
+
+/* ========== 预览卡片 ========== */
+.preview-card {
+  margin: 32rpx;
+  background: var(--swancam-surface);
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.7);
+  border: 1rpx solid var(--swancam-border);
+  position: relative;
+}
+
+.share-image {
+  width: 100%;
+  max-height: 75vw;
+  display: block;
+}
+
+.brand-watermark {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.55));
+  padding: 40rpx 24rpx 20rpx;
+  text-align: right;
+}
+
+.brand-watermark-text {
+  font-size: 20rpx;
+  color: rgba(255, 255, 255, 0.65);
+  letter-spacing: 1rpx;
+}
+
+/* ========== 提示文字 ========== */
+.tip-text {
+  text-align: center;
+  font-size: 24rpx;
+  color: var(--swancam-text-tertiary);
+  margin: -8rpx 0 24rpx;
+}
+
+/* ========== Pro 提示条 ========== */
+.pro-tip {
+  margin: 0 32rpx 28rpx;
+  background: rgba(255, 45, 85, 0.08);
+  border: 1rpx solid rgba(255, 45, 85, 0.2);
+  border-radius: var(--radius-md);
+  padding: 20rpx 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pro-tip-text {
+  font-size: 24rpx;
+  color: var(--swancam-text-secondary);
+  flex: 1;
+  line-height: 1.4;
+}
+
+.pro-tip-btn {
+  font-size: 24rpx;
+  color: var(--swancam-primary);
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+  margin-left: 20rpx;
+}
+
+/* ========== 底部操作按钮组 ========== */
+.action-row {
+  display: flex;
+  gap: 16rpx;
+  padding: 24rpx 32rpx;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 24rpx);
+  margin-top: auto;
+  background: rgba(28, 28, 30, 0.95);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border-top: 1rpx solid rgba(255, 255, 255, 0.05);
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+  padding: 24rpx 0;
+  border-radius: var(--radius-md);
+  border: none;
+  line-height: 1;
+  transition: transform var(--duration-fast) var(--ease-out-expo),
+              opacity var(--duration-fast);
+}
+
+.action-btn::after {
+  border: none;
+}
+
+.action-btn:active {
+  transform: scale(0.94);
+  opacity: 0.85;
+}
+
+.save-btn {
+  background: var(--swancam-primary);
+  color: #FFFFFF;
+  box-shadow: 0 8rpx 24rpx rgba(255, 45, 85, 0.3);
+}
+
+.share-friend-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--swancam-text-primary);
+  border: 1rpx solid rgba(255, 255, 255, 0.1);
+}
+
+.home-btn {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--swancam-text-secondary);
+  border: 1rpx solid rgba(255, 255, 255, 0.07);
+}
+
+.btn-icon {
+  font-size: 36rpx;
+}
+
+.btn-text {
+  font-size: 22rpx;
+  font-weight: var(--font-weight-med);
+  color: inherit;
+}

@@ -1,0 +1,37 @@
+<!-- components/emoji-picker/emoji-picker.wxml -->
+<view class="emoji-picker">
+
+  <view class="popup-header">
+    <text class="popup-title">选择 Emoji</text>
+    <view class="popup-close" bindtap="close">✕</view>
+  </view>
+
+  <!-- 分类Tab -->
+  <scroll-view class="category-tabs" scroll-x show-scrollbar="{{false}}">
+    <view class="category-scroll">
+      <view
+        class="category-tab {{item.id === activeCategoryId ? 'active' : ''}}"
+        wx:for="{{categories}}"
+        wx:key="id"
+        bindtap="switchCategory"
+        data-id="{{item.id}}"
+      >
+        {{item.name}}
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- Emoji 网格 -->
+  <view class="emoji-grid">
+    <view
+      class="emoji-item"
+      wx:for="{{displayEmoji}}"
+      wx:key="index"
+      bindtap="selectEmoji"
+      data-emoji="{{item}}"
+    >
+      {{item}}
+    </view>
+  </view>
+
+</view>

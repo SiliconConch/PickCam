@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "微信开发者工具 - 打开项目",
+      "runtimeExecutable": "C:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat",
+      "runtimeArgs": ["open", "--project", "C:\\Claude\\PickCam\\miniprogram", "--port", "9420"],
+      "port": 9420
+    },
+    {
+      "name": "微信小程序 - 自动预览 (生成二维码)",
+      "runtimeExecutable": "C:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat",
+      "runtimeArgs": ["auto-preview", "--project", "C:\\Claude\\PickCam\\miniprogram", "--port", "9420"],
+      "port": 9420
+    }
+  ]
+}

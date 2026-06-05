@@ -1,0 +1,19 @@
+# 微信小程序私有配置（含 AppID 等敏感信息，不进版本库）
+miniprogram/project.private.config.json
+
+# Claude Code 本地配置
+.claude/settings.local.json
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 编辑器
+.vscode/
+*.swp
+*.swo
+
+# 日志
+*.log
+npm-debug.log*

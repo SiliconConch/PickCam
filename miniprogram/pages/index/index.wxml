@@ -1,0 +1,61 @@
+<!-- pages/index/index.wxml -->
+<view class="index-page">
+
+  <!-- 顶部品牌 -->
+  <view class="brand-area">
+    <view class="brand-logo-wrap">
+      <text class="brand-logo-icon">◎</text>
+    </view>
+    <text class="brand-title">拾光相机</text>
+    <text class="brand-sub">捕捉每一个平凡瞬间</text>
+  </view>
+
+  <!-- 主操作区 -->
+  <view class="action-area">
+
+    <!-- 拍摄（主入口） -->
+    <view class="action-primary" bindtap="goCamera">
+      <view class="action-left">
+        <view class="action-icon-circle">
+          <text class="action-icon">○</text>
+        </view>
+        <view class="action-text-group">
+          <text class="action-title">拍照 / 录像</text>
+          <text class="action-desc">打开相机，实时拍摄</text>
+        </view>
+      </view>
+      <text class="action-chevron">›</text>
+    </view>
+
+    <!-- 相册 -->
+    <view class="action-secondary" bindtap="choosePhotos">
+      <view class="action-left">
+        <view class="action-icon-square">
+          <text class="action-icon">⊞</text>
+        </view>
+        <view class="action-text-group">
+          <text class="action-title">选择照片</text>
+          <text class="action-desc">从相册导入，最多 {{maxPhotos}} 张</text>
+        </view>
+      </view>
+      <text class="action-chevron">›</text>
+    </view>
+
+  </view>
+
+  <!-- 功能标签 -->
+  <view class="feature-tags">
+    <view class="feat-tag"><text class="feat-dot"></text><text class="feat-text">15款精品滤镜</text></view>
+    <view class="feat-tag"><text class="feat-dot"></text><text class="feat-text">智能水印</text></view>
+    <view class="feat-tag"><text class="feat-dot"></text><text class="feat-text">时光语</text></view>
+    <view class="feat-tag"><text class="feat-dot"></text><text class="feat-text">批量处理</text></view>
+    <view class="feat-tag"><text class="feat-dot"></text><text class="feat-text">专业调色</text></view>
+    <view class="feat-tag"><text class="feat-dot"></text><text class="feat-text">滤镜对比</text></view>
+  </view>
+
+  <!-- 底部品牌 -->
+  <view class="footer-brand">
+    <text class="footer-text">硅基拾贝 · PickCam</text>
+  </view>
+
+</view>

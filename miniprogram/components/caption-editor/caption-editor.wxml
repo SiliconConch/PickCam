@@ -1,0 +1,81 @@
+<!-- components/caption-editor/caption-editor.wxml -->
+<view class="ce-sheet">
+
+  <!-- 头部 -->
+  <view class="ce-header">
+    <text class="ce-title">时光语</text>
+    <view class="ce-close" bindtap="close">✕</view>
+  </view>
+
+  <!-- 快捷操作行 -->
+  <view class="ce-quick-row">
+    <view class="ce-quick-btn" bindtap="selectDaily">
+      <text class="ce-quick-icon">☀</text>
+      <text class="ce-quick-text">今日推荐</text>
+    </view>
+    <view class="ce-quick-btn" bindtap="selectRandom">
+      <text class="ce-quick-icon">⚄</text>
+      <text class="ce-quick-text">随机一条</text>
+    </view>
+    <view class="ce-quick-btn ce-add-btn" bindtap="showAdd">
+      <text class="ce-quick-icon">＋</text>
+      <text class="ce-quick-text">添加自定义</text>
+    </view>
+  </view>
+
+  <!-- 时光语网格（4列） -->
+  <scroll-view class="ce-scroll" scroll-y>
+    <view class="ce-grid">
+      <view
+        class="ce-item {{item.text === selectedCaption ? 'ce-item-active' : ''}} {{item.isCustom ? 'ce-item-custom' : ''}}"
+        wx:for="{{displayCaptions}}"
+        wx:key="index"
+        bindtap="onTapCaption"
+        bindlongpress="onLongPressCaption"
+        data-caption="{{item.text}}"
+      >
+        <text class="ce-emoji" wx:if="{{item.emoji}}">{{item.emoji}}</text>
+        <text class="ce-label">{{item.label}}</text>
+      </view>
+    </view>
+    <view class="ce-empty" wx:if="{{displayCaptions.length === 0}}">
+      <text class="ce-empty-hint">暂无时光语，点击上方「添加自定义」</text>
+    </view>
+  </scroll-view>
+
+  <!-- 自定义操作菜单 -->
+  <view class="ce-menu-mask" wx:if="{{showContextMenu}}" bindtap="closeContextMenu">
+    <view class="ce-menu" catchtap="noop">
+      <view class="ce-menu-item" bindtap="editCaption">
+        <text class="ce-menu-icon">✏</text>
+        <text class="ce-menu-text">编辑</text>
+      </view>
+      <view class="ce-menu-divider"></view>
+      <view class="ce-menu-item ce-menu-danger" bindtap="deleteCaption">
+        <text class="ce-menu-icon">⊗</text>
+        <text class="ce-menu-text">删除</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 添加对话框 -->
+  <view class="ce-dialog-mask" wx:if="{{showAddDialog}}" bindtap="cancelAdd">
+    <view class="ce-dialog" catchtap="noop">
+      <text class="ce-dialog-title">添加时光语</text>
+      <input
+        class="ce-dialog-input"
+        value="{{newCaption}}"
+        placeholder="最长20字..."
+        maxlength="20"
+        bindinput="onNewCaptionInput"
+        focus="{{showAddDialog}}"
+      />
+      <text class="ce-char-count">{{newCaption.length}}/20</text>
+      <view class="ce-dialog-btns">
+        <view class="ce-dialog-cancel" bindtap="cancelAdd">取消</view>
+        <view class="ce-dialog-confirm" bindtap="addCustomCaption">添加</view>
+      </view>
+    </view>
+  </view>
+
+</view>

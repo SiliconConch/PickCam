@@ -1,0 +1,37 @@
+<!-- pages/splash/splash.wxml -->
+<view class="splash-page">
+
+  <!-- 径向光晕背景 -->
+  <view class="bg-glow"></view>
+
+  <!-- Logo — 相机镜头 CSS 艺术 -->
+  <view class="logo-wrap {{logoIn ? 'logo-in' : ''}}">
+    <view class="lens-ring lr-outer"></view>
+    <view class="lens-ring lr-mid"></view>
+    <view class="lens-core">
+      <view class="lens-dot"></view>
+    </view>
+    <!-- 光圈叶片线 -->
+    <view class="aperture-line al-0"></view>
+    <view class="aperture-line al-1"></view>
+    <view class="aperture-line al-2"></view>
+  </view>
+
+  <!-- 品牌文字 -->
+  <view class="brand-block {{textIn ? 'brand-in' : ''}}">
+    <text class="brand-zh">拾光相机</text>
+    <view class="brand-rule"></view>
+    <text class="brand-en">PICK · CAM</text>
+  </view>
+
+  <!-- 标语 -->
+  <text class="tagline {{taglineIn ? 'tagline-in' : ''}}">用光影，讲述属于你的故事</text>
+
+  <!-- 加载点 -->
+  <view class="dots-wrap {{dotsIn ? 'dots-in' : ''}}">
+    <view class="ldot d1"></view>
+    <view class="ldot d2"></view>
+    <view class="ldot d3"></view>
+  </view>
+
+</view>

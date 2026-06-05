@@ -1,0 +1,285 @@
+<!-- pages/edit/edit.wxml  V1.2 -->
+<view class="edit-page">
+
+  <!-- 顶部工具栏 -->
+  <view class="toolbar">
+    <view class="toolbar-left">
+      <view class="count-badge" wx:if="{{photos.length > 1}}">{{currentIndex + 1}}/{{photos.length}}</view>
+    </view>
+    <text class="toolbar-title">编辑</text>
+    <view class="toolbar-right">
+      <view class="share-btn" bindtap="goShare">完成</view>
+    </view>
+  </view>
+
+  <!-- 实时预览 Canvas -->
+  <view class="preview-area" style="height:{{previewHeight}}px;"
+    bindtouchstart="onPreviewTouchStart"
+    bindtouchmove="onPreviewTouchMove"
+  >
+    <canvas
+      type="2d"
+      id="preview-canvas"
+      class="preview-canvas"
+      style="width:{{previewWidth}}px; height:{{previewHeight}}px;"
+    />
+    <!-- 处理进度遮罩 -->
+    <view class="processing-overlay" wx:if="{{isProcessing}}">
+      <view class="processing-content">
+        <view class="processing-spinner"></view>
+        <text class="processing-text">处理中 {{processingIndex}}/{{totalPhotos}}</text>
+        <view class="progress-bar">
+          <view class="progress-fill" style="width:{{processingIndex / totalPhotos * 100}}%"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 照片缩略图（多张时显示） -->
+  <scroll-view class="thumbnail-list" scroll-x wx:if="{{photos.length > 1}}" show-scrollbar="{{false}}">
+    <view class="thumbnail-scroll">
+      <view
+        class="thumbnail-item {{index === currentIndex ? 'active' : ''}}"
+        wx:for="{{photos}}" wx:key="index"
+        bindtap="switchPhoto" data-index="{{index}}"
+      >
+        <image class="thumbnail-image" src="{{item.tempFilePath}}" mode="aspectFill" />
+        <view class="thumbnail-index">{{index + 1}}</view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- Tab 切换栏 -->
+  <view class="tab-bar">
+    <view class="tab-item {{activeTab === 'filter' ? 'active' : ''}}" bindtap="showPanel" data-panel="filter">
+      <view class="tab-spotlight" wx:if="{{activeTab === 'filter'}}"></view>
+      <text class="tab-label">滤镜</text>
+    </view>
+    <view class="tab-item {{activeTab === 'watermark' ? 'active' : ''}}" bindtap="showPanel" data-panel="watermark">
+      <view class="tab-spotlight" wx:if="{{activeTab === 'watermark'}}"></view>
+      <text class="tab-label">水印</text>
+    </view>
+    <view class="tab-item {{showCaptionPanel ? 'active' : ''}}" bindtap="showPanel" data-panel="caption">
+      <view class="tab-spotlight" wx:if="{{showCaptionPanel}}"></view>
+      <text class="tab-label">时光语</text>
+    </view>
+    <view class="tab-item {{showEmojiPanel ? 'active' : ''}}" bindtap="showPanel" data-panel="emoji">
+      <view class="tab-spotlight" wx:if="{{showEmojiPanel}}"></view>
+      <text class="tab-label">表情</text>
+    </view>
+  </view>
+
+  <!-- ===== 滤镜面板 ===== -->
+  <view class="panel filter-panel" wx:if="{{activeTab === 'filter'}}">
+
+    <!-- 滤镜名 + 工具行 -->
+    <view class="filter-top-row">
+      <text class="filter-name-current">{{currentFilterName}}</text>
+      <view class="filter-tools">
+        <text class="filter-intensity-pct">{{filterIntensity}}%</text>
+        <view class="ctrl-pill {{compareMode ? 'ctrl-active' : ''}}" bindtap="toggleCompare">
+          <text class="ctrl-pill-text">对比</text>
+        </view>
+        <view class="ctrl-pill {{proParamsDirty ? 'ctrl-pro-active' : ''}}" bindtap="toggleProPanel">
+          <text class="ctrl-pill-text">专业</text>
+          <view class="pro-dot-sm" wx:if="{{proParamsDirty}}"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 强度滑杆 -->
+    <view class="filter-slider-wrap">
+      <slider
+        min="0" max="100" value="{{filterIntensity}}"
+        activeColor="#FF2D55"
+        backgroundColor="rgba(255,255,255,0.1)"
+        block-color="#FFFFFF"
+        bindchange="onIntensityChange"
+        bindchanging="onIntensityChange"
+      />
+    </view>
+
+    <!-- 滤镜 Pill 横向列表（色块 + 名称） -->
+    <scroll-view class="filter-pills-scroll" scroll-x show-scrollbar="{{false}}">
+      <view class="filter-pills-row">
+        <view
+          class="filter-pill {{item.id === selectedFilterId ? 'active' : ''}}"
+          wx:for="{{filteredFilters}}" wx:key="id"
+          bindtap="selectFilter" data-id="{{item.id}}"
+        >
+          <view class="fp-swatch" style="background: linear-gradient(135deg, {{item.swatch[0]}} 0%, {{item.swatch[1]}} 100%);"></view>
+          <text class="filter-pill-name">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+
+  </view>
+
+  <!-- ===== 水印面板 ===== -->
+  <view class="panel watermark-panel" wx:if="{{activeTab === 'watermark'}}">
+
+    <!-- 水印标题行 + 开关 -->
+    <view class="wm-header-row">
+      <text class="wm-header-title">水印</text>
+      <switch checked="{{watermarkEnabled}}" color="#FF2D55" bindchange="toggleWatermark" />
+    </view>
+
+    <view wx:if="{{watermarkEnabled}}">
+
+      <!-- 模板卡片横向列表 -->
+      <scroll-view class="wm-cards-scroll" scroll-x show-scrollbar="{{false}}">
+        <view class="wm-cards-row">
+          <view
+            class="wm-card {{item.id === selectedTemplateId ? 'active' : ''}}"
+            wx:for="{{watermarkTemplates}}" wx:key="id"
+            bindtap="selectTemplate" data-id="{{item.id}}"
+          >
+            <view class="wm-card-bar"></view>
+            <text class="wm-card-name">{{item.name}}</text>
+            <text class="wm-card-sub">{{item.preview}}</text>
+          </view>
+        </view>
+      </scroll-view>
+
+      <!-- 字号 + 透明度滑杆 -->
+      <view class="wm-sliders">
+        <view class="wm-slider-row">
+          <text class="wm-slider-label">字号</text>
+          <slider class="wm-sl"
+            min="16" max="48" value="{{wmFontSize}}"
+            activeColor="#FF2D55" backgroundColor="rgba(255,255,255,0.12)" block-color="#FFFFFF"
+            bindchange="onFontSizeChange" bindchanging="onFontSizeChange"
+          />
+          <text class="wm-slider-val">{{wmFontSize}}</text>
+        </view>
+        <view class="wm-slider-row">
+          <text class="wm-slider-label">透明</text>
+          <slider class="wm-sl"
+            min="0" max="100" value="{{wmOpacity}}"
+            activeColor="#FF2D55" backgroundColor="rgba(255,255,255,0.12)" block-color="#FFFFFF"
+            bindchange="onOpacityChange" bindchanging="onOpacityChange"
+          />
+          <text class="wm-slider-val">{{wmOpacity}}%</text>
+        </view>
+      </view>
+
+      <!-- 水印快捷操作 -->
+      <view class="wm-actions">
+        <view class="wm-action-btn {{autoWmPosition ? 'wm-action-active' : ''}}" bindtap="toggleAutoWmPosition">
+          <text class="wm-action-icon">🎯</text>
+          <text class="wm-action-text">智能选位</text>
+        </view>
+        <view class="wm-action-btn" bindtap="refreshLocation">
+          <text class="wm-action-icon">📍</text>
+          <text class="wm-action-text">刷新位置</text>
+        </view>
+        <view class="wm-action-btn" bindtap="toggleProPanel">
+          <text class="wm-action-icon">⚙️</text>
+          <text class="wm-action-text">高级参数</text>
+        </view>
+      </view>
+
+    </view>
+  </view>
+
+  <!-- ===== 底部保存按钮 ===== -->
+  <view class="bottom-actions safe-bottom">
+    <view class="save-single" bindtap="saveCurrent">保存当前</view>
+    <view class="save-all" bindtap="batchSaveAll">
+      <text wx:if="{{!isProcessing}}">保存全部{{photos.length > 1 ? '（' + photos.length + '张）' : ''}}</text>
+      <text wx:if="{{isProcessing}}">处理中 {{processingIndex}}/{{totalPhotos}}</text>
+    </view>
+  </view>
+
+  <!-- ===== 专业模式面板（底部浮层） ===== -->
+  <view class="mask" wx:if="{{showProPanel}}" bindtap="closeProPanel"></view>
+  <view class="pro-panel" wx:if="{{showProPanel}}">
+    <view class="pro-panel-header">
+      <text class="pro-panel-title">专业调整</text>
+      <view class="pro-reset-btn" bindtap="resetProParams">复位</view>
+      <view class="pro-close-btn" bindtap="closeProPanel">完成</view>
+    </view>
+    <scroll-view class="pro-params-scroll" scroll-y>
+      <view class="pro-params-grid">
+        <view class="pro-param-item" wx:for="{{proParamConfig}}" wx:key="key">
+          <view class="pro-param-header">
+            <text class="pro-param-icon">{{item.icon}}</text>
+            <text class="pro-param-name">{{item.name}}</text>
+            <text class="pro-param-value">{{proParams[item.key] > 0 ? '+' : ''}}{{proParams[item.key]}}</text>
+          </view>
+          <slider
+            class="pro-param-slider"
+            min="{{item.min}}" max="{{item.max}}"
+            value="{{proParams[item.key]}}"
+            activeColor="#FF2D55"
+            backgroundColor="rgba(255,255,255,0.12)"
+            block-color="#FF2D55"
+            bindchange="onProParamChange"
+            bindchanging="onProParamChange"
+            data-key="{{item.key}}"
+          />
+        </view>
+      </view>
+      <view class="save-custom-btn" bindtap="saveProAsCustomFilter" wx:if="{{proParamsDirty}}">
+        <text>保存为自定义滤镜</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- ===== 文案选择弹窗 ===== -->
+  <view class="mask" wx:if="{{showCaptionPanel}}" bindtap="closeAllPanels"></view>
+  <view class="popup" wx:if="{{showCaptionPanel}}">
+    <caption-editor bind:select="onCaptionSelect" bind:close="closeAllPanels" />
+  </view>
+
+  <!-- ===== Emoji 弹窗 ===== -->
+  <view class="mask" wx:if="{{showEmojiPanel}}" bindtap="closeAllPanels"></view>
+  <view class="popup" wx:if="{{showEmojiPanel}}">
+    <emoji-picker bind:select="onEmojiSelect" bind:close="closeAllPanels" />
+  </view>
+
+  <!-- ===== 更多设置弹窗 ===== -->
+  <view class="mask" wx:if="{{showCustomizePanel}}" bindtap="closeAllPanels"></view>
+  <view class="popup customize-popup" wx:if="{{showCustomizePanel}}">
+    <view class="popup-header">
+      <text class="popup-title">更多设置</text>
+      <view class="popup-close" bindtap="closeAllPanels">✕</view>
+    </view>
+    <scroll-view class="customize-scroll" scroll-y>
+
+      <!-- 水印位置（九宫格） -->
+      <view class="section-block">
+        <text class="section-label">水印位置</text>
+        <view class="pos-grid">
+          <view
+            class="pos-cell {{item.id === wmPosition ? 'active' : ''}}"
+            wx:for="{{positionOptions}}" wx:key="id"
+            bindtap="setWatermarkPos" data-pos="{{item.id}}"
+          >
+            <text class="pos-arrow">{{item.label}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 位置文字 -->
+      <view class="section-block">
+        <view class="section-label-row">
+          <text class="section-label">位置文字</text>
+          <text class="section-hint" wx:if="{{locationLoading}}">定位中...</text>
+          <text class="section-hint" wx:if="{{!locationLoading && !photoMeta.location}}">未获取到位置</text>
+        </view>
+        <view class="location-input-wrap">
+          <input
+            class="location-input"
+            value="{{photoMeta.location}}"
+            placeholder="手动输入，如：北京 · 三里屯"
+            bindinput="onLocationInput"
+            maxlength="30"
+          />
+        </view>
+      </view>
+
+    </scroll-view>
+  </view>
+
+</view>

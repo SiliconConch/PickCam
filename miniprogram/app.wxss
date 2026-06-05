@@ -1,0 +1,96 @@
+/* app.wxss - Swancam Design System Implementation */
+
+page {
+  /* 1. Brand Color System (WCAG 2.1 Compliant) */
+  --swancam-primary: #FF2D55;
+  --swancam-primary-light: rgba(255, 45, 85, 0.15);
+  --swancam-accent: #E67E22;
+  
+  /* Neutral Palette */
+  --swancam-bg: #000000;
+  --swancam-surface: #1C1C1E;
+  --swancam-surface-2: #2C2C2E;
+  --swancam-border: rgba(255, 255, 255, 0.12);
+  
+  /* Text System */
+  --swancam-text-primary: #FFFFFF;
+  --swancam-text-secondary: rgba(255, 255, 255, 0.6);
+  --swancam-text-tertiary: rgba(255, 255, 255, 0.3);
+
+  /* 2. Typography System */
+  --font-size-h1: 40rpx;
+  --font-size-h2: 32rpx;
+  --font-size-body: 28rpx;
+  --font-size-caption: 24rpx;
+  --font-size-tiny: 20rpx;
+  --line-height-std: 1.5;
+  --font-weight-bold: 600;
+  --font-weight-med: 500;
+  --font-weight-reg: 400;
+
+  /* 3. Spacing System (8px Grid) */
+  --space-1: 8rpx;
+  --space-2: 16rpx;
+  --space-3: 24rpx;
+  --space-4: 32rpx;
+  --space-6: 48rpx;
+  --space-8: 64rpx;
+
+  /* 4. Radius & Shadows */
+  --radius-sm: 8rpx;
+  --radius-md: 16rpx;
+  --radius-lg: 32rpx;
+  --radius-full: 999rpx;
+  --shadow-standard: 0 4rpx 16rpx rgba(0, 0, 0, 0.4);
+
+  /* 5. Motion Tokens */
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --duration-fast: 0.2s;
+  --duration-std: 0.35s;
+
+  background-color: var(--swancam-bg);
+  color: var(--swancam-text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", sans-serif;
+  line-height: var(--line-height-std);
+}
+
+/* Atomic Components - Buttons */
+.swancam-btn-ripple {
+  position: relative;
+  transition: transform var(--duration-fast) var(--ease-out-expo), opacity var(--duration-fast);
+}
+.swancam-btn-ripple:active {
+  transform: scale(0.94);
+  opacity: 0.85;
+}
+
+/* Glassmorphism Implementation */
+.glass-panel {
+  background: rgba(28, 28, 30, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1rpx solid var(--swancam-border);
+}
+
+/* Layout - 12 Column Grid Helper (Simplified for Mobile) */
+.grid-container {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 var(--space-4);
+}
+
+/* Safe Area Utilities */
+.safe-bottom {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 24rpx);
+}
+
+/* Ripple Button (Pressable Feedback) */
+.ripple-btn {
+  position: relative;
+  transition: transform var(--duration-fast) var(--ease-out-expo), opacity var(--duration-fast);
+}
+.ripple-btn:active {
+  transform: scale(0.94);
+  opacity: 0.85;
+}
+

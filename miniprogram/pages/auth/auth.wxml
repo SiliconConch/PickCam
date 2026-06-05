@@ -1,0 +1,58 @@
+<!-- pages/auth/auth.wxml -->
+<view class="auth-page">
+
+  <!-- 跳过 -->
+  <view class="skip-btn" bindtap="skip">跳过</view>
+
+  <!-- Logo区 -->
+  <view class="auth-logo">
+    <view class="logo-ring"></view>
+    <view class="logo-core"></view>
+  </view>
+
+  <!-- 标题 -->
+  <view class="auth-headline">
+    <text class="auth-title">设置你的专属形象</text>
+    <text class="auth-sub">记录美好，从一张好照片开始</text>
+  </view>
+
+  <!-- 头像选择 -->
+  <view class="avatar-section">
+    <button
+      class="avatar-btn"
+      open-type="chooseAvatar"
+      bind:chooseavatar="onChooseAvatar"
+    >
+      <image wx:if="{{avatar}}" src="{{avatar}}" class="avatar-img" mode="aspectFill"/>
+      <view wx:else class="avatar-placeholder">
+        <text class="avatar-ph-icon">＋</text>
+        <text class="avatar-ph-text">选择头像</text>
+      </view>
+    </button>
+    <text class="avatar-hint">点击选择微信头像或上传照片</text>
+  </view>
+
+  <!-- 昵称输入 -->
+  <view class="input-section">
+    <view class="input-wrap">
+      <input
+        class="nickname-input"
+        type="nickname"
+        placeholder="输入你的昵称"
+        placeholder-class="input-placeholder"
+        value="{{nickname}}"
+        bindinput="onNicknameInput"
+        maxlength="16"
+      />
+    </view>
+  </view>
+
+  <!-- 进入按钮 -->
+  <view class="auth-actions">
+    <view class="start-btn" bindtap="save">
+      <text class="start-label">进入拾光</text>
+      <text class="start-arrow">→</text>
+    </view>
+  </view>
+
+</view>

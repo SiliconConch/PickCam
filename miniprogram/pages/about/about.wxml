@@ -1,0 +1,93 @@
+<!-- pages/about/about.wxml -->
+<view class="about-page">
+
+  <!-- 顶部导航栏 -->
+  <view class="about-nav">
+    <view class="about-nav-back" bindtap="goBack">‹</view>
+    <text class="about-nav-title">关于</text>
+    <view class="about-nav-placeholder"></view>
+  </view>
+
+  <!-- Logo区 -->
+  <view class="app-hero">
+    <view class="hero-logo">
+      <view class="hero-ring hr1"></view>
+      <view class="hero-ring hr2"></view>
+      <view class="hero-core">
+        <view class="hero-dot"></view>
+      </view>
+    </view>
+    <text class="app-name">拾光相机</text>
+    <view class="version-badge">
+      <text class="version-text">v{{version}}</text>
+    </view>
+    <text class="app-slogan">用光影，讲述属于你的故事</text>
+  </view>
+
+  <!-- 黄金分割线 -->
+  <view class="golden-rule"></view>
+
+  <!-- 特性列表 -->
+  <view class="features-section">
+    <view class="feature-item">
+      <view class="feat-icon-wrap fi-cam">
+        <text class="feat-icon">📸</text>
+      </view>
+      <view class="feat-text">
+        <text class="feat-title">专业相机取景</text>
+        <text class="feat-desc">直觉式操作，一键拍摄，支持倒计时与录像</text>
+      </view>
+    </view>
+    <view class="feature-item">
+      <view class="feat-icon-wrap fi-filter">
+        <text class="feat-icon">🎞</text>
+      </view>
+      <view class="feat-text">
+        <text class="feat-title">15 种精品滤镜</text>
+        <text class="feat-desc">胶片 · 电影 · 人文 · 黑白，还原真实质感</text>
+      </view>
+    </view>
+    <view class="feature-item">
+      <view class="feat-icon-wrap fi-wm">
+        <text class="feat-icon">🏷</text>
+      </view>
+      <view class="feat-text">
+        <text class="feat-title">精美水印模板</text>
+        <text class="feat-desc">15 套风格，时间 · 地点 · 心情，留下专属印记</text>
+      </view>
+    </view>
+    <view class="feature-item">
+      <view class="feat-icon-wrap fi-cap">
+        <text class="feat-icon">💬</text>
+      </view>
+      <view class="feat-text">
+        <text class="feat-title">时光语</text>
+        <text class="feat-desc">20 句精选文案，一键为每张照片配词</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作区 -->
+  <view class="action-section">
+    <view class="about-card" bindtap="shareApp">
+      <text class="about-card-icon">↗</text>
+      <text class="about-card-label">分享给朋友</text>
+    </view>
+    <view class="about-card" bindtap="openFeedback">
+      <text class="about-card-icon">✉</text>
+      <text class="about-card-label">意见反馈</text>
+    </view>
+  </view>
+
+  <!-- 底部信息 -->
+  <view class="about-footer">
+    <text class="footer-made">Made with ♥ by PickCam Team</text>
+    <text class="footer-copy">© 2026 PickCam · 保留所有权利</text>
+    <view class="footer-links">
+      <text class="footer-link" bindtap="openPrivacy">隐私政策</text>
+      <text class="footer-sep">·</text>
+      <text class="footer-link" bindtap="openPrivacy">用户协议</text>
+    </view>
+  </view>
+
+</view>

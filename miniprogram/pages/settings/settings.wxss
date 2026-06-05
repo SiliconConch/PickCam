@@ -1,0 +1,86 @@
+/* pages/settings/settings.wxss - Swancam Refined Settings */
+.settings-page {
+  min-height: 100vh;
+  background: var(--swancam-bg);
+  padding-bottom: 80rpx;
+}
+
+/* ── 导航栏 ── */
+.settings-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(env(safe-area-inset-top) + 24rpx) 32rpx 24rpx;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1rpx solid rgba(255,255,255,0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.settings-nav-back {
+  font-size: 52rpx;
+  color: var(--swancam-text-primary);
+  width: 64rpx;
+  line-height: 1;
+  padding: 0 8rpx;
+}
+.settings-nav-back:active { opacity: 0.5; }
+.settings-nav-title {
+  font-size: 32rpx;
+  font-weight: var(--font-weight-bold);
+  color: var(--swancam-text-primary);
+  letter-spacing: 2rpx;
+}
+.settings-nav-placeholder { width: 64rpx; }
+
+/* sections 与导航栏之间留出间距 */
+.section { margin: 48rpx 32rpx 0; }
+
+.section-title {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: var(--swancam-text-tertiary);
+  margin-bottom: 16rpx;
+  padding-left: 8rpx;
+  text-transform: uppercase;
+  letter-spacing: 2rpx;
+}
+
+.card {
+  background: rgba(28, 28, 30, 0.6);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1rpx solid rgba(255,255,255,0.05);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  padding: 32rpx;
+  gap: 24rpx;
+}
+.row:active { background: rgba(255,255,255,0.04); }
+
+.row-left {
+  display: flex; align-items: center; gap: 24rpx; flex: 1;
+}
+.row-icon { font-size: 32rpx; width: 48rpx; text-align: center; }
+.row-text  { display: flex; flex-direction: column; gap: 4rpx; }
+.row-label { font-size: 28rpx; color: var(--swancam-text-primary); }
+.row-hint  { font-size: 22rpx; color: var(--swancam-text-tertiary); }
+.row-arrow { font-size: 32rpx; color: var(--swancam-text-tertiary); opacity: 0.5; }
+
+.divider {
+  height: 1rpx;
+  background: rgba(255,255,255,0.05);
+  margin: 0 32rpx;
+}
+
+.settings-footer {
+  margin-top: 80rpx;
+  text-align: center;
+}
+.footer-text { font-size: 22rpx; color: var(--swancam-text-tertiary); opacity: 0.5; }

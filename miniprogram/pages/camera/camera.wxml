@@ -1,0 +1,181 @@
+<!-- pages/camera/camera.wxml -->
+<view class="camera-page layout-{{layoutMode}}">
+
+  <!-- 取景器（全屏） -->
+  <camera
+    device-position="{{devicePosition}}"
+    flash="{{flashMode}}"
+    class="camera-view"
+    binderror="onCameraError"
+    wx:if="{{!cameraError}}"
+  />
+
+  <!-- 1. 顶部控制中心 (Refined HUD - Minimalist & Professional) -->
+  <view class="top-control-center glass-panel">
+    <view class="top-action-item swancam-btn-ripple" bindtap="flipCamera">
+      <view class="swancam-icon-flip"></view>
+    </view>
+    <view class="top-action-sep"></view>
+    <view class="top-action-item swancam-btn-ripple" bindtap="toggleLayoutMode">
+      <view class="swancam-icon-layout"></view>
+    </view>
+    <view class="top-action-sep"></view>
+    <view class="top-action-item swancam-btn-ripple" bindtap="resetTopParams">
+      <view class="swancam-icon-reset"></view>
+    </view>
+  </view>
+
+  <!-- 1b. 专业参数条 (Pro Params Strip) -->
+  <view class="pro-params-strip" bindtap="toggleParamTips">
+    <view class="pro-param-chip" wx:for="{{topParams}}" wx:key="id">
+      <text class="ppc-label">{{item.label}}</text>
+      <text class="ppc-value">{{item.value}}</text>
+    </view>
+  </view>
+
+  <!-- 参数 Tip 浮层 -->
+  <view class="param-tip-panel glass-panel" wx:if="{{showParamTips}}" bindtap="toggleParamTips">
+    <view class="param-tip-item" wx:for="{{topParams}}" wx:key="id">
+      <text class="pti-label">{{item.label}}</text>
+      <text class="pti-tip">{{item.tip}}</text>
+    </view>
+  </view>
+
+  <!-- 2. 右侧悬浮 HUD (Refined Professional Toolset) -->
+  <view class="side-hud-group">
+    <view class="hud-item swancam-btn-ripple {{isMorePanelOpen ? 'active' : ''}}" catchtap="onSidebarSettingsTap" aria-label="设置">
+      <view class="metaphor-icon-wrapper">
+        <view class="metaphor-spotlight"></view>
+        <text class="metaphor-symbol">⚙️</text>
+      </view>
+      <text class="hud-item-label">设置</text>
+    </view>
+    <view class="hud-item swancam-btn-ripple {{flashMode !== 'off' ? 'active' : ''}}" catchtap="cycleFlash" aria-label="闪光灯">
+      <view class="metaphor-icon-wrapper">
+        <view class="metaphor-spotlight"></view>
+        <text class="metaphor-symbol">⚡</text>
+      </view>
+      <text class="hud-item-label">{{flashMode === 'on' ? '开' : flashMode === 'auto' ? 'AUTO' : '关'}}</text>
+    </view>
+    <view class="hud-item swancam-btn-ripple {{timerMode > 0 ? 'active' : ''}}" catchtap="cycleTimer" aria-label="定时器">
+      <view class="metaphor-icon-wrapper">
+        <view class="metaphor-spotlight"></view>
+        <text class="metaphor-symbol">⏲️</text>
+      </view>
+      <text class="hud-item-label">{{timerMode > 0 ? timerMode + 's' : '关'}}</text>
+    </view>
+  </view>
+
+  <!-- 3. 滤镜工作台 (Refined V5 - Pure Symbolic Metaphor) -->
+  <view class="bottom-console-wrap">
+    <view class="filter-workbench">
+      <scroll-view class="filter-scroll" scroll-x show-scrollbar="{{false}}">
+        <view class="filter-list-inner">
+          <view 
+            class="filter-metaphor-item {{item.id === selectedFilterId ? 'active' : ''}}" 
+            wx:for="{{filterStripList}}" 
+            wx:key="id"
+            bindtap="selectFilter"
+            data-id="{{item.id}}"
+          >
+            <!-- 具象符号核心层 -->
+            <view class="metaphor-icon-wrapper">
+              <view class="metaphor-spotlight"></view>
+              <text class="metaphor-symbol">{{item.meta.icon}}</text>
+            </view>
+            <text class="metaphor-label">{{item.name}}</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 4. 核心交互层 (Atomic Precision) -->
+    <view class="core-action-row">
+      <view class="atomic-action swancam-btn-ripple" bindtap="goToAlbum">
+        <view class="metaphor-icon-wrapper">
+          <view class="metaphor-spotlight"></view>
+          <text class="metaphor-symbol">🌄</text>
+        </view>
+        <text class="atomic-label">相册</text>
+      </view>
+
+      <view class="shutter-swancam-container swancam-btn-ripple" bindtap="onShutterTap" bindlongpress="onShutterLongPress">
+        <view class="shutter-spotlight"></view>
+        <view class="shutter-swancam-ring">
+          <view class="shutter-swancam-core {{isRecording ? 'is-recording' : ''}}"></view>
+        </view>
+      </view>
+
+      <view class="atomic-action swancam-btn-ripple" bindtap="goProfile">
+        <view class="metaphor-icon-wrapper">
+          <view class="metaphor-spotlight"></view>
+          <text class="metaphor-symbol" wx:if="{{!userAvatar}}">👤</text>
+          <image wx:else src="{{userAvatar}}" class="user-avatar-metaphor" mode="aspectFill"/>
+        </view>
+        <text class="atomic-label">我的</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 5. “更多”功能面板 (Settings & Tools) -->
+  <view class="more-panel-mask" wx:if="{{isMorePanelOpen}}" bindtap="toggleMorePanel" catchtouchmove="preventTouchMove">
+    <view class="more-panel-card glass-panel" catchtap="preventTouchMove">
+      <view class="more-panel-header">
+        <text class="more-panel-title">更多设置</text>
+        <view class="more-panel-close" bindtap="toggleMorePanel">✕</view>
+      </view>
+      <view class="more-grid">
+        <view class="more-grid-item ripple-btn" wx:for="{{moreFunctions}}" wx:key="id" bindtap="onMoreFuncTap" data-id="{{item.id}}">
+          <view class="more-grid-icon-box">
+            <text class="more-grid-icon">{{item.icon}}</text>
+          </view>
+          <text class="more-grid-label">{{item.name}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 6. 定时器自定义选择器 (Custom Timer Picker) -->
+  <view class="timer-picker-mask" wx:if="{{showTimerPicker}}" bindtap="closeTimerPicker" catchtouchmove="preventTouchMove">
+    <view class="timer-picker-card glass-panel" catchtap="preventTouchMove">
+      <view class="timer-picker-header">
+        <text class="timer-picker-title">自定义定时</text>
+        <text class="timer-picker-value">{{customTimerValue}}s</text>
+      </view>
+      <view class="timer-slider-wrap">
+        <slider 
+          min="1" max="15" value="{{customTimerValue}}" 
+          activeColor="#FF2D55" backgroundColor="rgba(255,255,255,0.1)" 
+          block-size="24" bindchange="onTimerSliderChange" bindchanging="onTimerSliderChange"
+        />
+      </view>
+      <view class="timer-picker-actions">
+        <view class="timer-btn timer-btn-cancel" bindtap="closeTimerPicker">取消</view>
+        <view class="timer-btn timer-btn-confirm" bindtap="confirmTimer">确定</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 7. 倒计时覆盖层 -->
+  <view class="countdown-overlay" wx:if="{{isCountingDown}}">
+    <text class="countdown-num">{{countdownValue}}</text>
+  </view>
+
+  <!-- 8. 录像时长指示器 -->
+  <view class="recording-hud" wx:if="{{isRecording}}">
+    <view class="rec-dot-pulse"></view>
+    <text class="rec-time-text">REC {{recordDuration}}s</text>
+  </view>
+
+  <!-- 相机权限错误页 -->
+  <view class="error-screen" wx:if="{{cameraError}}">
+    <text class="error-icon-big">⊘</text>
+    <text class="error-title">相机无法启动</text>
+    <text class="error-desc">请在设置中允许拾光相机使用摄像头</text>
+    <view class="error-actions">
+      <view class="err-btn err-btn-primary" bindtap="openSettings">去开启权限</view>
+      <view class="err-btn" bindtap="goToAlbum">改用相册</view>
+    </view>
+  </view>
+
+</view>

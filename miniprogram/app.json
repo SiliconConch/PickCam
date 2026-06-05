@@ -1,0 +1,36 @@
+{
+  "pages": [
+    "pages/splash/splash",
+    "pages/camera/camera",
+    "pages/guide/guide",
+    "pages/auth/auth",
+    "pages/profile/profile",
+    "pages/settings/settings",
+    "pages/about/about",
+    "pages/edit/edit",
+    "pages/share/share",
+    "pages/index/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#0A0A0A",
+    "navigationBarTitleText": "拾光相机",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#0A0A0A"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents",
+  "requiredPrivateInfos": ["getLocation"],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "获取位置信息用于水印地理位置标注"
+    },
+    "scope.camera": {
+      "desc": "拍摄照片和视频"
+    },
+    "scope.writePhotosAlbum": {
+      "desc": "保存处理后的照片到相册"
+    }
+  }
+}

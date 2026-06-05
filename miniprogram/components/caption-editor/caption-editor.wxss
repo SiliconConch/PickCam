@@ -1,0 +1,269 @@
+/* components/caption-editor/caption-editor.wxss - Swancam Dark */
+
+.ce-sheet {
+  background: rgba(28, 28, 30, 0.98);
+  border-radius: 40rpx 40rpx 0 0;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 16rpx);
+}
+
+/* ── 头部 ─────────────────────────────────────── */
+.ce-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 32rpx 16rpx;
+  border-bottom: 1rpx solid rgba(255, 255, 255, 0.06);
+}
+
+.ce-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--swancam-text-primary);
+}
+
+.ce-close {
+  font-size: 28rpx;
+  color: var(--swancam-text-tertiary);
+  padding: 8rpx 16rpx;
+  transition: opacity 0.2s;
+}
+.ce-close:active { opacity: 0.5; }
+
+/* ── 快捷操作行 ───────────────────────────────── */
+.ce-quick-row {
+  display: flex;
+  gap: 12rpx;
+  padding: 16rpx 24rpx 12rpx;
+}
+
+.ce-quick-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 14rpx 8rpx;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-sm);
+  border: 1rpx solid rgba(255, 255, 255, 0.08);
+  transition: opacity 0.2s;
+}
+.ce-quick-btn:active { opacity: 0.6; }
+
+/* 自定义添加按钮：用品牌红做区分 */
+.ce-add-btn {
+  background: var(--swancam-primary-light);
+  border-color: rgba(255, 45, 85, 0.3);
+}
+
+.ce-quick-icon {
+  font-size: 22rpx;
+  color: var(--swancam-text-secondary);
+}
+.ce-quick-text {
+  font-size: 22rpx;
+  color: var(--swancam-text-secondary);
+}
+.ce-add-btn .ce-quick-icon,
+.ce-add-btn .ce-quick-text {
+  color: var(--swancam-primary);
+}
+
+/* ── 网格列表 ─────────────────────────────────── */
+.ce-scroll {
+  max-height: 420rpx;
+  padding: 12rpx 20rpx 20rpx;
+}
+
+.ce-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+}
+
+.ce-item {
+  width: calc(25% - 7.5rpx);
+  height: 104rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5rpx;
+  padding: 0 4rpx;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1rpx solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  transition: all var(--duration-fast) var(--ease-out-expo);
+}
+.ce-item:active { opacity: 0.55; }
+
+.ce-emoji {
+  font-size: 30rpx;
+  line-height: 1;
+}
+
+.ce-label {
+  font-size: 20rpx;
+  color: var(--swancam-text-secondary);
+  text-align: center;
+  line-height: 1.2;
+  letter-spacing: 0.5rpx;
+}
+
+/* 选中态：品牌红 */
+.ce-item.ce-item-active {
+  background: var(--swancam-primary-light);
+  border-color: var(--swancam-primary);
+}
+.ce-item.ce-item-active .ce-label {
+  color: var(--swancam-primary);
+  font-weight: 600;
+}
+
+/* 自定义项：虚线边框 */
+.ce-item.ce-item-custom {
+  border-style: dashed;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+.ce-item.ce-item-custom .ce-label {
+  color: var(--swancam-text-tertiary);
+}
+.ce-item.ce-item-custom.ce-item-active {
+  background: var(--swancam-primary-light);
+  border-style: solid;
+  border-color: var(--swancam-primary);
+}
+.ce-item.ce-item-custom.ce-item-active .ce-label {
+  color: var(--swancam-primary);
+}
+
+/* 空状态 */
+.ce-empty {
+  padding: 48rpx 0;
+  text-align: center;
+}
+.ce-empty-hint {
+  font-size: 24rpx;
+  color: var(--swancam-text-tertiary);
+}
+
+/* ── 长按操作菜单 ─────────────────────────────── */
+.ce-menu-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ce-menu {
+  background: var(--swancam-surface-2);
+  border-radius: var(--radius-md);
+  min-width: 240rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.6);
+  border: 1rpx solid rgba(255, 255, 255, 0.08);
+}
+
+.ce-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 28rpx 32rpx;
+  transition: background 0.15s;
+}
+.ce-menu-item:active { background: rgba(255, 255, 255, 0.06); }
+
+.ce-menu-divider {
+  height: 1rpx;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.ce-menu-icon { font-size: 26rpx; color: var(--swancam-text-secondary); }
+.ce-menu-text { font-size: 28rpx; color: var(--swancam-text-primary); }
+.ce-menu-danger .ce-menu-icon,
+.ce-menu-danger .ce-menu-text { color: var(--swancam-primary); }
+
+/* ── 添加对话框 ───────────────────────────────── */
+.ce-dialog-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ce-dialog {
+  background: var(--swancam-surface-2);
+  border-radius: var(--radius-lg);
+  padding: 40rpx 32rpx 32rpx;
+  width: 560rpx;
+  box-shadow: 0 8rpx 48rpx rgba(0, 0, 0, 0.6);
+  border: 1rpx solid rgba(255, 255, 255, 0.08);
+}
+
+.ce-dialog-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--swancam-text-primary);
+  text-align: center;
+  margin-bottom: 28rpx;
+}
+
+.ce-dialog-input {
+  width: 100%;
+  border: 1rpx solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-sm);
+  padding: 18rpx 20rpx;
+  font-size: 28rpx;
+  color: var(--swancam-text-primary);
+  background: rgba(255, 255, 255, 0.06);
+  box-sizing: border-box;
+}
+
+.ce-char-count {
+  display: block;
+  text-align: right;
+  font-size: 22rpx;
+  color: var(--swancam-text-tertiary);
+  margin-top: 8rpx;
+  margin-bottom: 24rpx;
+}
+
+.ce-dialog-btns {
+  display: flex;
+  gap: 16rpx;
+}
+
+.ce-dialog-cancel {
+  flex: 1;
+  text-align: center;
+  padding: 22rpx;
+  border-radius: var(--radius-sm);
+  font-size: 28rpx;
+  color: var(--swancam-text-secondary);
+  background: rgba(255, 255, 255, 0.06);
+  transition: opacity 0.2s;
+}
+.ce-dialog-cancel:active { opacity: 0.7; }
+
+.ce-dialog-confirm {
+  flex: 1;
+  text-align: center;
+  padding: 22rpx;
+  border-radius: var(--radius-sm);
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  background: var(--swancam-primary);
+  box-shadow: 0 4rpx 12rpx rgba(255, 45, 85, 0.3);
+  transition: opacity 0.2s;
+}
+.ce-dialog-confirm:active { opacity: 0.8; }

@@ -1,0 +1,53 @@
+<!-- pages/share/share.wxml -->
+<view class="share-page">
+
+  <!-- 顶部导航 -->
+  <view class="nav-bar">
+    <view class="nav-back" bindtap="goBack">‹ 返回</view>
+    <text class="nav-title">分享</text>
+    <view class="nav-right"></view>
+  </view>
+
+  <!-- 照片预览卡片 -->
+  <view class="preview-card">
+    <image
+      class="share-image"
+      src="{{imagePath}}"
+      mode="aspectFit"
+      show-menu-by-longpress="{{true}}"
+    />
+
+    <!-- 底部品牌水印（非Pro版显示） -->
+    <view class="brand-watermark" wx:if="{{!isPro}}">
+      <text class="brand-watermark-text">来自拾光相机 PickCam</text>
+    </view>
+  </view>
+
+  <!-- 操作提示 -->
+  <text class="tip-text">长按图片可保存或分享</text>
+
+  <!-- Pro版提示（非Pro时显示） -->
+  <view class="pro-tip" wx:if="{{!isPro}}">
+    <text class="pro-tip-text">升级 Pro 版可去除「来自拾光相机」水印</text>
+    <view class="pro-tip-btn">了解 Pro 版</view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-row safe-bottom">
+    <button class="action-btn save-btn" bindtap="saveImage">
+      <text class="btn-icon">💾</text>
+      <text class="btn-text">保存相册</text>
+    </button>
+
+    <button class="action-btn share-friend-btn" open-type="share">
+      <text class="btn-icon">💬</text>
+      <text class="btn-text">发给朋友</text>
+    </button>
+
+    <button class="action-btn home-btn" bindtap="goHome">
+      <text class="btn-icon">🏠</text>
+      <text class="btn-text">再拍一批</text>
+    </button>
+  </view>
+
+</view>
