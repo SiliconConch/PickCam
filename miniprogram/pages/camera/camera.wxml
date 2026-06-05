@@ -176,7 +176,7 @@
       </view>
       <view class="more-grid">
         <view
-          class="more-grid-item ripple-btn {{(item.id === 'grid' && showGrid) || (item.id === 'level' && showLevel) ? 'func-active' : ''}}"
+          class="more-grid-item ripple-btn {{activeFuncSet[item.id] ? 'func-active' : ''}}"
           wx:for="{{moreFunctions}}" wx:key="id"
           bindtap="onMoreFuncTap" data-id="{{item.id}}"
         >
@@ -184,8 +184,7 @@
             <text class="more-grid-icon">{{item.icon}}</text>
           </view>
           <text class="more-grid-label">{{item.name}}</text>
-          <!-- R7: 激活态小圆点 -->
-          <view class="func-active-dot" wx:if="{{(item.id === 'grid' && showGrid) || (item.id === 'level' && showLevel)}}"></view>
+          <view class="func-active-dot" wx:if="{{activeFuncSet[item.id]}}"></view>
         </view>
       </view>
     </view>

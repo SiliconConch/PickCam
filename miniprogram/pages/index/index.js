@@ -1,7 +1,6 @@
 // pages/index/index.js  V2 Fresh
 const APP_CONFIG = require('../../config/app.config.js');
-const { SimpleStats, StreakTracker } = require('../../utils/statistics.js');
-const GUIDED_KEY = 'pickcam_guided_v1';
+const { SimpleStats } = require('../../utils/statistics.js');
 
 // 根据小时生成打招呼文案
 function getGreeting() {

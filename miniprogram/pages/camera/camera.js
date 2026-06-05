@@ -75,7 +75,9 @@ Page({
     // E1: 快门声音
     soundFeedback: false,
     // F2: 滤镜名标注
-    showFilterBadge: false
+    showFilterBadge: false,
+    // R7: 更多面板激活态预计算（避免 WXML 复杂表达式）
+    activeFuncSet: { grid: false, level: false }
   },
 
   _cameraCtx: null,
@@ -266,15 +268,16 @@ Page({
     }
     // B1: 网格线切换
     if (id === 'grid') {
-      this.setData({ showGrid: !this.data.showGrid });
-      wx.showToast({ title: this.data.showGrid ? '网格线已开启' : '网格线已关闭', icon: 'none', duration: 800 });
+      const next = !this.data.showGrid;
+      this.setData({ showGrid: next, activeFuncSet: { ...this.data.activeFuncSet, grid: next } });
+      wx.showToast({ title: next ? '网格线已开启' : '网格线已关闭', icon: 'none', duration: 800 });
       if (wx.vibrateShort) wx.vibrateShort({ type: 'light' });
       return;
     }
     // B2: 水平仪切换
     if (id === 'level') {
       const show = !this.data.showLevel;
-      this.setData({ showLevel: show });
+      this.setData({ showLevel: show, activeFuncSet: { ...this.data.activeFuncSet, level: show } });
       if (show) {
         try {
           wx.startDeviceMotionListening({ interval: 'ui' });

@@ -25,12 +25,6 @@
   "permission": {
     "scope.userLocation": {
       "desc": "获取位置信息用于水印地理位置标注"
-    },
-    "scope.camera": {
-      "desc": "拍摄照片和视频"
-    },
-    "scope.writePhotosAlbum": {
-      "desc": "保存处理后的照片到相册"
     }
   }
 }

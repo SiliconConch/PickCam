@@ -166,14 +166,18 @@ function showError(title) {
 }
 
 /**
- * 获取系统信息（缓存）
+ * 获取窗口信息（缓存）— 替代废弃的 wx.getSystemInfoSync()
  */
-let _systemInfo = null;
+let _windowInfo = null;
 function getSystemInfo() {
-  if (!_systemInfo) {
-    _systemInfo = wx.getSystemInfoSync();
+  if (!_windowInfo) {
+    try {
+      _windowInfo = wx.getWindowInfo();
+    } catch (e) {
+      _windowInfo = wx.getSystemInfoSync(); // 旧版基础库兜底
+    }
   }
-  return _systemInfo;
+  return _windowInfo;
 }
 
 /**
