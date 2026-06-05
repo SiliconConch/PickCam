@@ -55,6 +55,11 @@
     </view>
   </view>
 
+  <!-- F2: 当前滤镜名标注（切换时淡入，1.5s 后淡出） -->
+  <view class="filter-name-badge {{showFilterBadge ? 'badge-show' : ''}}" wx:if="{{selectedFilterId !== 'original' || showFilterBadge}}">
+    <text class="filter-badge-text">{{currentFilterName}}</text>
+  </view>
+
   <!-- 1. 顶部控制中心 (Refined HUD - Minimalist & Professional) -->
   <view class="top-control-center glass-panel">
     <view class="top-action-item swancam-btn-ripple" bindtap="flipCamera">

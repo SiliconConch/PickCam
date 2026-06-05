@@ -7,6 +7,7 @@ const FILTER_CATEGORIES = [
   { id: 'landscape', name: '风景',  icon: '🏔️' },
   { id: 'street',    name: '街拍',  icon: '🏙️' },
   { id: 'film',      name: '胶片',  icon: '📷' },
+  { id: 'cinema',    name: '电影',  icon: '🎬' },
   { id: 'favorites', name: '收藏',  icon: '⭐' }
 ];
 
@@ -15,15 +16,15 @@ const FILTER_CATEGORY_MAP = {
   'original':       ['all'],
   'restore':        ['all', 'portrait', 'landscape'],
   'film-memory':    ['all', 'film'],
-  'bw-narrative':   ['all', 'street', 'film'],
+  'bw-narrative':   ['all', 'street', 'film', 'cinema'],
   'morning-light':  ['all', 'landscape'],
   'vintage-oil':    ['all', 'film'],
   'soft-portrait':  ['all', 'portrait'],
-  'urban-street':   ['all', 'street'],
+  'urban-street':   ['all', 'street', 'cinema'],
   'natural-vivid':  ['all', 'landscape'],
   'dreamy':         ['all', 'portrait'],
-  'cinematic':      ['all', 'street'],
-  'dark-mood':      ['all', 'street'],
+  'cinematic':      ['all', 'street', 'cinema'],
+  'dark-mood':      ['all', 'street', 'cinema'],
   'pink-soft':      ['all', 'portrait'],
   'cool-crisp':     ['all', 'landscape', 'street'],
   'warm-nostalgia': ['all', 'film', 'portrait']

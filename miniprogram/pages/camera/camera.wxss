@@ -719,6 +719,33 @@
   color: #FFFFFF; letter-spacing: 2rpx;
 }
 
+/* ── F2: 滤镜名标注 ── */
+.filter-name-badge {
+  position: absolute;
+  left: 32rpx;
+  top: calc(env(safe-area-inset-top) + 130rpx);
+  background: rgba(0,0,0,0.42);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: var(--radius-full);
+  padding: 8rpx 24rpx;
+  z-index: 145;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-8rpx);
+  transition: opacity 0.3s ease, transform 0.3s var(--ease-out-expo);
+}
+.filter-name-badge.badge-show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.filter-badge-text {
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.9);
+  font-weight: var(--font-weight-med);
+  letter-spacing: 1rpx;
+}
+
 /* 页面容器基础样式 */
 .camera-page {
   position: fixed;

@@ -73,7 +73,9 @@ Page({
     // B2: 水平仪像素偏移（F3: 修正 rpx→px）
     levelTiltPx: 0,
     // E1: 快门声音
-    soundFeedback: false
+    soundFeedback: false,
+    // F2: 滤镜名标注
+    showFilterBadge: false
   },
 
   _cameraCtx: null,
@@ -81,6 +83,7 @@ Page({
   _countdownTimer: null,
   _focusTimer: null,
   _zoomTimer: null,
+  _badgeTimer: null,
   _pinchStartDist: 0,
   _pinchStartZoom: 1,
   _currentZoom: 1,
@@ -150,6 +153,7 @@ Page({
     if (this._shutterAudio) {
       try { this._shutterAudio.destroy(); } catch (e) {}
     }
+    if (this._badgeTimer) clearTimeout(this._badgeTimer);
   },
 
   // ── C1: 点击对焦（显示对焦圈 + 调用 setFocusPoint API） ────────
@@ -203,8 +207,11 @@ Page({
     const id = e.currentTarget.dataset.id;
     const filter = FILTER_PRESETS.find(f => f.id === id);
     if (!filter) return;
-    this.setData({ selectedFilterId: id, currentFilterName: filter.name });
+    this.setData({ selectedFilterId: id, currentFilterName: filter.name, showFilterBadge: true });
     wx.setStorageSync('last_capture_filter', id);
+    // F2: 1.6s 后自动隐藏标注
+    clearTimeout(this._badgeTimer);
+    this._badgeTimer = setTimeout(() => this.setData({ showFilterBadge: false }), 1600);
   },
 
   goProfile() {

@@ -850,6 +850,12 @@ Page({
     this._renderPreview();
   },
 
+  // ── 复位旋转/翻转 ──
+  resetTransform() {
+    this.setData({ imageRotation: 0, imageFlipped: false });
+    this._renderPreview();
+  },
+
   // ── 将旋转/翻转应用到图片文件（保存前调用） ──
   async _applyTransform(filePath) {
     const { imageRotation, imageFlipped } = this.data;

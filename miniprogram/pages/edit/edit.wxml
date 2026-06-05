@@ -49,18 +49,18 @@
     </view>
   </scroll-view>
 
-  <!-- C4: 旋转/翻转工具栏 -->
-  <view class="transform-bar">
+  <!-- C4: 旋转/翻转工具栏（有变换时高亮 + "重置"按钮出现） -->
+  <view class="transform-bar {{imageRotation > 0 || imageFlipped ? 'transform-bar-active' : ''}}">
     <view class="transform-btn swancam-btn-ripple" bindtap="rotateImage">
       <text class="transform-icon">↻</text>
-      <text class="transform-label">旋转</text>
+      <text class="transform-label">旋转 {{imageRotation > 0 ? imageRotation + '°' : ''}}</text>
     </view>
     <view class="transform-btn swancam-btn-ripple {{imageFlipped ? 'active' : ''}}" bindtap="flipImage">
       <text class="transform-icon">⇔</text>
-      <text class="transform-label">翻转</text>
+      <text class="transform-label">{{imageFlipped ? '已翻转' : '翻转'}}</text>
     </view>
-    <view class="transform-hint">
-      <text class="transform-hint-text">{{imageRotation > 0 || imageFlipped ? '已变换' : ''}}</text>
+    <view class="transform-reset" bindtap="resetTransform" wx:if="{{imageRotation > 0 || imageFlipped}}">
+      <text class="transform-reset-text">复位</text>
     </view>
   </view>
 

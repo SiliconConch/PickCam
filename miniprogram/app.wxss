@@ -43,6 +43,20 @@ page {
   --radius-full: 999rpx;
   --shadow-standard: 0 4rpx 16rpx rgba(0, 0, 0, 0.4);
 
+  /* 5.5 Fresh / Light-page Design Tokens（用于非相机页的清新浅色主题） */
+  --fresh-bg:            #F7F6F2;
+  --fresh-surface:       #FFFFFF;
+  --fresh-surface-2:     #F0EFE9;
+  --fresh-border:        rgba(0, 0, 0, 0.07);
+  --fresh-text-primary:  #1A1A18;
+  --fresh-text-secondary:#6B6B66;
+  --fresh-text-tertiary: #A0A09A;
+  --fresh-sage:          #6B8F5E;          /* sage green 主调（参考图片） */
+  --fresh-sage-light:    rgba(107,143,94,0.12);
+  --fresh-sage-mid:      rgba(107,143,94,0.22);
+  --fresh-shadow-sm:     0 2rpx 12rpx rgba(0,0,0,0.06);
+  --fresh-shadow-md:     0 6rpx 28rpx rgba(0,0,0,0.09);
+
   /* 5. Motion Tokens */
   --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
   --duration-fast: 0.2s;

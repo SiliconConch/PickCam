@@ -1,61 +1,86 @@
-<!-- pages/index/index.wxml -->
+<!-- pages/index/index.wxml  V2 Fresh -->
 <view class="index-page">
 
-  <!-- 顶部品牌 -->
-  <view class="brand-area">
-    <view class="brand-logo-wrap">
-      <text class="brand-logo-icon">◎</text>
+  <!-- 顶部：今日打招呼 + 连续天数 -->
+  <view class="index-header">
+    <view class="index-header-left">
+      <text class="index-greeting">{{greeting}}</text>
+      <text class="index-date">{{todayStr}}</text>
     </view>
-    <text class="brand-title">拾光相机</text>
-    <text class="brand-sub">捕捉每一个平凡瞬间</text>
+    <view class="streak-badge" wx:if="{{streak > 0}}">
+      <text class="streak-icon">🔥</text>
+      <text class="streak-num">{{streak}}</text>
+      <text class="streak-label">天</text>
+    </view>
+  </view>
+
+  <!-- 统计卡片（仿参考图数据展示） -->
+  <view class="stats-card">
+    <view class="stat-item">
+      <text class="stat-num">{{stats.photos}}</text>
+      <text class="stat-label">作品</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num">{{stats.filters}}</text>
+      <text class="stat-label">滤镜</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num">{{stats.watermarks}}</text>
+      <text class="stat-label">水印</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num">{{streak}}</text>
+      <text class="stat-label">连续天</text>
+    </view>
   </view>
 
   <!-- 主操作区 -->
   <view class="action-area">
 
-    <!-- 拍摄（主入口） -->
-    <view class="action-primary" bindtap="goCamera">
-      <view class="action-left">
-        <view class="action-icon-circle">
-          <text class="action-icon">○</text>
+    <!-- 拍摄（主 CTA） -->
+    <view class="action-camera" bindtap="goCamera">
+      <view class="action-camera-left">
+        <view class="camera-icon-wrap">
+          <text class="camera-icon-sym">◎</text>
         </view>
-        <view class="action-text-group">
-          <text class="action-title">拍照 / 录像</text>
-          <text class="action-desc">打开相机，实时拍摄</text>
+        <view class="action-text-col">
+          <text class="action-cam-title">开始拍摄</text>
+          <text class="action-cam-desc">实时取景 · 滤镜 · 倒计时</text>
         </view>
       </view>
-      <text class="action-chevron">›</text>
+      <text class="action-arrow">›</text>
     </view>
 
-    <!-- 相册 -->
-    <view class="action-secondary" bindtap="choosePhotos">
-      <view class="action-left">
-        <view class="action-icon-square">
-          <text class="action-icon">⊞</text>
+    <!-- 相册选图（次 CTA） -->
+    <view class="action-album" bindtap="choosePhotos">
+      <view class="action-album-left">
+        <view class="album-icon-wrap">
+          <text class="album-icon-sym">⊞</text>
         </view>
-        <view class="action-text-group">
-          <text class="action-title">选择照片</text>
-          <text class="action-desc">从相册导入，最多 {{maxPhotos}} 张</text>
+        <view class="action-text-col">
+          <text class="action-alb-title">从相册选图</text>
+          <text class="action-alb-desc">最多 {{maxPhotos}} 张批量处理</text>
         </view>
       </view>
-      <text class="action-chevron">›</text>
+      <text class="action-arrow action-arrow-sub">›</text>
     </view>
 
   </view>
 
-  <!-- 功能标签 -->
-  <view class="feature-tags">
-    <view class="feat-tag"><text class="feat-dot"></text><text class="feat-text">15款精品滤镜</text></view>
-    <view class="feat-tag"><text class="feat-dot"></text><text class="feat-text">智能水印</text></view>
-    <view class="feat-tag"><text class="feat-dot"></text><text class="feat-text">时光语</text></view>
-    <view class="feat-tag"><text class="feat-dot"></text><text class="feat-text">批量处理</text></view>
-    <view class="feat-tag"><text class="feat-dot"></text><text class="feat-text">专业调色</text></view>
-    <view class="feat-tag"><text class="feat-dot"></text><text class="feat-text">滤镜对比</text></view>
+  <!-- 功能特性标签（sage green 色调） -->
+  <view class="feature-row">
+    <view class="feat-pill" wx:for="{{features}}" wx:key="*this">
+      <text class="feat-pill-dot">·</text>
+      <text class="feat-pill-text">{{item}}</text>
+    </view>
   </view>
 
   <!-- 底部品牌 -->
-  <view class="footer-brand">
-    <text class="footer-text">硅基拾贝 · PickCam</text>
+  <view class="index-footer">
+    <text class="index-footer-text">拾光相机 · PickCam</text>
   </view>
 
 </view>
