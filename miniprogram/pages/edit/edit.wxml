@@ -218,9 +218,9 @@
           <text class="wm-action-icon">📍</text>
           <text class="wm-action-text">刷新位置</text>
         </view>
-        <view class="wm-action-btn" bindtap="toggleProPanel">
-          <text class="wm-action-icon">⚙️</text>
-          <text class="wm-action-text">高级参数</text>
+        <view class="wm-action-btn" bindtap="showPanel" data-panel="customize">
+          <text class="wm-action-icon">📐</text>
+          <text class="wm-action-text">位置设置</text>
         </view>
       </view>
 

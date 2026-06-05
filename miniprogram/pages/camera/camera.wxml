@@ -23,7 +23,7 @@
     <view class="level-track">
       <view class="level-center-mark"></view>
       <view class="level-bubble {{levelOk ? 'level-ok' : ''}}"
-        style="transform: translateX({{levelTilt * 120}}rpx)">
+        style="transform: translateX({{levelTiltPx}}px)">
       </view>
     </view>
     <text class="level-hint">{{levelOk ? '水平 ✓' : '调整倾斜'}}</text>
@@ -88,12 +88,12 @@
 
   <!-- 2. 右侧悬浮 HUD (Refined Professional Toolset) -->
   <view class="side-hud-group">
-    <view class="hud-item swancam-btn-ripple {{isMorePanelOpen ? 'active' : ''}}" catchtap="onSidebarSettingsTap" aria-label="设置">
+    <view class="hud-item swancam-btn-ripple {{isMorePanelOpen ? 'active' : ''}}" catchtap="toggleMorePanel" aria-label="更多">
       <view class="metaphor-icon-wrapper">
         <view class="metaphor-spotlight"></view>
-        <text class="metaphor-symbol">⚙️</text>
+        <text class="metaphor-symbol">⊞</text>
       </view>
-      <text class="hud-item-label">设置</text>
+      <text class="hud-item-label">更多</text>
     </view>
     <view class="hud-item swancam-btn-ripple {{flashMode !== 'off' ? 'active' : ''}}" catchtap="cycleFlash" aria-label="闪光灯">
       <view class="metaphor-icon-wrapper">
@@ -193,7 +193,7 @@
           wx:for="{{ratioOptions}}" wx:key="id"
           bindtap="selectRatio" data-ratio="{{item.id}}"
         >
-          <view class="ratio-thumb ratio-thumb-{{item.id === 'full' ? 'full' : item.id}}"></view>
+          <view class="ratio-thumb {{item.thumbClass}}"></view>
           <text class="ratio-name">{{item.label}}</text>
         </view>
       </view>

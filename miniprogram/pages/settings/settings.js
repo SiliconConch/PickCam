@@ -58,7 +58,21 @@ Page({
   },
 
   openFeedback() {
-    wx.navigateTo({ url: '/pages/about/about' });
+    // E3: 使用微信客服消息或复制邮箱方式收集反馈
+    wx.showModal({
+      title: '意见反馈',
+      content: '感谢您的使用！\n如有问题或建议，请发送邮件至：\npickcam@siliconconch.com',
+      confirmText: '复制邮箱',
+      cancelText: '关闭',
+      success: (res) => {
+        if (res.confirm) {
+          wx.setClipboardData({
+            data: 'pickcam@siliconconch.com',
+            success: () => wx.showToast({ title: '邮箱已复制', icon: 'success' })
+          });
+        }
+      }
+    });
   },
 
   openPrivacy() {

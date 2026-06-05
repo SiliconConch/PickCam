@@ -599,6 +599,47 @@
   border-radius: var(--radius-full);
 }
 
+/* ── S1: 更多功能面板（之前完全缺失） ── */
+.more-panel-mask {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.55); z-index: 300;
+  display: flex; align-items: flex-end;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.more-panel-card {
+  width: 100%;
+  padding: 36rpx 32rpx calc(env(safe-area-inset-bottom) + 48rpx);
+  border-radius: 40rpx 40rpx 0 0;
+}
+.more-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 40rpx;
+}
+.more-panel-title {
+  font-size: 32rpx; font-weight: var(--font-weight-bold); color: #FFF;
+}
+.more-panel-close {
+  font-size: 28rpx; color: var(--swancam-text-tertiary); padding: 8rpx 8rpx;
+}
+.more-grid {
+  display: flex; flex-wrap: wrap; gap: 24rpx;
+}
+.more-grid-item {
+  display: flex; flex-direction: column; align-items: center; gap: 14rpx;
+  width: calc(20% - 20rpx);
+}
+.more-grid-icon-box {
+  width: 96rpx; height: 96rpx;
+  background: rgba(255,255,255,0.07);
+  border-radius: var(--radius-md);
+  border: 1rpx solid rgba(255,255,255,0.06);
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--duration-fast);
+}
+.more-grid-item:active .more-grid-icon-box { background: rgba(255,255,255,0.14); }
+.more-grid-icon  { font-size: 36rpx; color: var(--swancam-text-primary); }
+.more-grid-label { font-size: 20rpx; color: var(--swancam-text-secondary); text-align: center; }
+
 /* ── B3: 画幅选择器 ── */
 .ratio-picker-mask {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -631,11 +672,12 @@
   border-radius: 4rpx;
   border: 1rpx solid rgba(255,255,255,0.2);
 }
-.ratio-thumb-full   { width: 56rpx; height: 72rpx; }
-.ratio-thumb-1\:1   { width: 60rpx; height: 60rpx; }
-.ratio-thumb-4\:3   { width: 64rpx; height: 48rpx; }
-.ratio-thumb-3\:2   { width: 66rpx; height: 44rpx; }
-.ratio-thumb-16\:9  { width: 72rpx; height: 40rpx; }
+/* F2: 使用安全的 CSS 类名（不含冒号） */
+.rt-full  { width: 56rpx; height: 72rpx; }
+.rt-1-1   { width: 60rpx; height: 60rpx; }
+.rt-4-3   { width: 64rpx; height: 48rpx; }
+.rt-3-2   { width: 66rpx; height: 44rpx; }
+.rt-16-9  { width: 72rpx; height: 40rpx; }
 .ratio-name { font-size: 22rpx; color: var(--swancam-text-secondary); }
 .ratio-option.active .ratio-name { color: var(--swancam-primary); font-weight: bold; }
 

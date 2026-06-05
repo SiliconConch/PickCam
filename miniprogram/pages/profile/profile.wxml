@@ -149,6 +149,11 @@
   <view class="menu-section">
     <text class="menu-section-title">应用</text>
     <view class="menu-list">
+      <view class="menu-item" bindtap="goSettings">
+        <text class="menu-icon">⚙️</text>
+        <text class="menu-label">应用设置</text>
+        <text class="menu-arrow">›</text>
+      </view>
       <view class="menu-item" bindtap="goAbout">
         <text class="menu-icon">◎</text>
         <text class="menu-label">关于拾光相机</text>

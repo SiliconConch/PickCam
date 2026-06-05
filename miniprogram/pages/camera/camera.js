@@ -10,7 +10,7 @@ const CAMERA_STRIP_IDS = [
 ];
 
 const FLASH_CYCLE = ['off', 'on', 'auto'];
-const TIMER_CYCLE = [0, 3, 10];
+// D1: TIMER_CYCLE 已废弃（改用自定义滑杆），已移除
 
 Page({
   data: {
@@ -20,8 +20,7 @@ Page({
     filterStripList: [],
     selectedFilterId: 'original',
     currentFilterName: '原片',
-    currentSwatchA: '#B8B8B8',
-    currentSwatchB: '#606060',
+    // D2: currentSwatchA/B 已移除（camera.wxml 中从未使用）
     isRecording: false,
     recordDuration: 0,
     isCountingDown: false,
@@ -54,15 +53,15 @@ Page({
     showLevel: false,
     levelTilt: 0,
     levelOk: false,
-    // B3: 画幅比例
+    // B3: 画幅比例（F2: thumbClass 使用安全 CSS 类名）
     aspectRatio: 'full',
     showRatioPicker: false,
     ratioOptions: [
-      { id: 'full', label: 'Full' },
-      { id: '1:1',  label: '1:1'  },
-      { id: '4:3',  label: '4:3'  },
-      { id: '3:2',  label: '3:2'  },
-      { id: '16:9', label: '16:9' },
+      { id: 'full', label: 'Full',  thumbClass: 'rt-full'  },
+      { id: '1:1',  label: '1:1',   thumbClass: 'rt-1-1'   },
+      { id: '4:3',  label: '4:3',   thumbClass: 'rt-4-3'   },
+      { id: '3:2',  label: '3:2',   thumbClass: 'rt-3-2'   },
+      { id: '16:9', label: '16:9',  thumbClass: 'rt-16-9'  },
     ],
     // C1: 对焦圈
     showFocusRing: false,
@@ -70,7 +69,11 @@ Page({
     focusY: 0,
     // C2: 缩放
     showZoomBar: false,
-    zoomValue: '1.0'
+    zoomValue: '1.0',
+    // B2: 水平仪像素偏移（F3: 修正 rpx→px）
+    levelTiltPx: 0,
+    // E1: 快门声音
+    soundFeedback: false
   },
 
   _cameraCtx: null,
@@ -98,20 +101,21 @@ Page({
     const lastFilterId = wx.getStorageSync('last_capture_filter') || 'original';
     const selectedFilter = FILTER_PRESETS.find(f => f.id === lastFilterId) || FILTER_PRESETS[0];
 
-    const profile = wx.getStorageSync('pickcam_user_profile') || {};
-    const swatch = selectedFilter.swatch || ['#B8B8B8', '#606060'];
+    const profile  = wx.getStorageSync('pickcam_user_profile') || {};
+    const settings = wx.getStorageSync('pickcam_settings') || {};
 
     this.setData({
       filterStripList: stripList,
       selectedFilterId: lastFilterId,
       currentFilterName: selectedFilter.name,
-      currentSwatchA: swatch[0],
-      currentSwatchB: swatch[1],
-      userAvatar: profile.avatar || ''
+      userAvatar: profile.avatar || '',
+      soundFeedback: !!settings.soundFeedback   // E1: 读取快门声设置
     });
 
     // 读取或初始化布局模式（默认沉浸式）
     this._initLayoutMode();
+    // E1: 初始化快门音效
+    this._initShutterAudio();
 
   },
 
@@ -142,6 +146,9 @@ Page({
     if (this._zoomTimer)      clearTimeout(this._zoomTimer);
     if (this.data.showLevel) {
       try { wx.stopDeviceMotionListening(); wx.offDeviceMotionChange(); } catch (e) {}
+    }
+    if (this._shutterAudio) {
+      try { this._shutterAudio.destroy(); } catch (e) {}
     }
   },
 
@@ -196,13 +203,7 @@ Page({
     const id = e.currentTarget.dataset.id;
     const filter = FILTER_PRESETS.find(f => f.id === id);
     if (!filter) return;
-    const swatch = filter.swatch || ['#B8B8B8', '#606060'];
-    this.setData({
-      selectedFilterId: id,
-      currentFilterName: filter.name,
-      currentSwatchA: swatch[0],
-      currentSwatchB: swatch[1]
-    });
+    this.setData({ selectedFilterId: id, currentFilterName: filter.name });
     wx.setStorageSync('last_capture_filter', id);
   },
 
@@ -271,8 +272,11 @@ Page({
         try {
           wx.startDeviceMotionListening({ interval: 'ui' });
           wx.onDeviceMotionChange(res => {
-            const gamma = Math.max(-45, Math.min(45, res.gamma || 0));
-            this.setData({ levelTilt: gamma / 45, levelOk: Math.abs(gamma) < 3 });
+            const gamma   = Math.max(-45, Math.min(45, res.gamma || 0));
+            // F3: inline style 不支持 rpx，转换为 px（120rpx ≈ windowWidth*0.16）
+            const rpxBase = wx.getWindowInfo().windowWidth / 750;
+            const tiltPx  = Math.round(gamma / 45 * 120 * rpxBase);
+            this.setData({ levelTilt: gamma / 45, levelOk: Math.abs(gamma) < 3, levelTiltPx: tiltPx });
           });
         } catch (e) {}
         wx.showToast({ title: '水平仪已开启', icon: 'none', duration: 800 });
@@ -369,14 +373,28 @@ Page({
     this._startRecording();
   },
 
+  // ── E1: 快门音效初始化 ────────────────────────────────────────
+  _initShutterAudio() {
+    try {
+      this._shutterAudio = wx.createInnerAudioContext();
+      this._shutterAudio.obeyMuteSwitch = false;
+      // 音效文件路径：需将快门音效放至 /assets/audio/shutter.mp3
+      this._shutterAudio.src = '/assets/audio/shutter.mp3';
+    } catch (e) {}
+  },
+
+  _playShutterSound() {
+    if (!this.data.soundFeedback || !this._shutterAudio) return;
+    try { this._shutterAudio.stop(); this._shutterAudio.play(); } catch (e) {}
+  },
+
   // ── 拍照 ──────────────────────────────────────────────────────
   _capturePhoto() {
     if (!this._cameraCtx) this._cameraCtx = wx.createCameraContext();
-    
-    // 触觉反馈：轻微震动
-    if (wx.vibrateShort) {
-      wx.vibrateShort({ type: 'light' });
-    }
+
+    // 触觉 + 音效反馈
+    if (wx.vibrateShort) wx.vibrateShort({ type: 'light' });
+    this._playShutterSound();   // E1: 快门声
 
     // 设置预选滤镜，传递给编辑页
     const app = getApp();
@@ -491,7 +509,8 @@ Page({
 
   // ── 相机错误处理 ──────────────────────────────────────────────
   onCameraError(e) {
-    this.setData({ cameraError: true, cameraErrorMsg: e.detail.errMsg || '' });
+    this.setData({ cameraError: true });
+    console.error('[Camera] error:', e.detail.errMsg);
   },
 
   openSettings() {

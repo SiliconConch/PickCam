@@ -191,12 +191,6 @@ Page({
     this._tempFiles = [];
   },
 
-  // ── 辅助：猜测模板分类 ──
-  _guessInitialWmCategory(templateId) {
-    const t = WATERMARK_TEMPLATES.find(t => t.id === templateId);
-    return t ? t.category : 'minimal';
-  },
-
   _filterTemplatesByCategory(category) {
     return WATERMARK_TEMPLATES.filter(t => t.category === category);
   },

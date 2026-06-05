@@ -101,6 +101,17 @@
   <view class="section">
     <text class="section-title">其他</text>
     <view class="card">
+      <view class="row row-tap" bindtap="openFeedback">
+        <view class="row-left">
+          <text class="row-icon">✉️</text>
+          <view class="row-text">
+            <text class="row-label">意见反馈</text>
+            <text class="row-hint">帮助我们做得更好</text>
+          </view>
+        </view>
+        <text class="row-arrow">›</text>
+      </view>
+      <view class="divider"></view>
       <view class="row row-tap" bindtap="goAbout">
         <view class="row-left">
           <text class="row-icon">◎</text>
