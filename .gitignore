@@ -1,8 +1,11 @@
+# 内部文档（产品需求、竞品分析等，不对外公开）
+docs/
+
 # 微信小程序私有配置（含 AppID 等敏感信息，不进版本库）
 miniprogram/project.private.config.json
 
-# Claude Code 本地配置
-.claude/settings.local.json
+# Claude Code 本地配置（所有层级）
+**/.claude/settings.local.json
 
 # 系统文件
 .DS_Store

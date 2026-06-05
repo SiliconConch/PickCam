@@ -1,5 +1,5 @@
 // engines/filter/presets.js
-// 15个精品滤镜预设（V1.1 升级版，参考SwanCam质量标准）
+// 15个精品滤镜预设（V1.1）
 
 const FILTER_PRESETS = [
   {
